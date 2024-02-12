@@ -26,7 +26,6 @@ def convert_to_excel(df: pd.DataFrame):
 
 def create_dataframe(files, dfs):
     if files:
-        st.markdown("### Extrato consolidado")
         for file in files:
             df = pd.read_excel(io=file)
             dfs.append(df)
@@ -75,28 +74,32 @@ if df is not None:
         df["Quantidade"],
     )
 
-    st.dataframe(data=df, use_container_width=True)
+    with st.expander("Visualizar Extrato Consolidado"):
+        st.markdown("### Extrato Consolidado")
+        st.dataframe(data=df, use_container_width=True, hide_index=True)
 
-    # Convert dataframe in excel format for download
-    df_excel = convert_to_excel(df)
-    st.download_button(
-        data=df_excel,
-        label="Exportar Excel",
-        file_name="extrato_consolidado_b3",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    )
+        # Convert dataframe in excel format for download
+        df_excel = convert_to_excel(df)
+        st.download_button(
+            data=df_excel,
+            label="Exportar Excel",
+            file_name="extrato_consolidado_b3",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
 
-    # Filter "entradas" and "saídas"
+    # Filter incomning and outgoing entries
     df_in = df[df["Entrada/Saída"].values == "Credito"]
     df_out = df[df["Entrada/Saída"].values == "Debito"]
 
-    col1, col2 = st.columns([1, 1])
+    with st.expander("Visualizar Entras/Saídas"):
 
-    col1.subheader("Entradas")
-    col1.dataframe(df_in)
+        col1, col2 = st.columns([1, 1])
 
-    col2.subheader("Saídas")
-    col2.dataframe(df_out)
+        col1.subheader("Entradas")
+        col1.dataframe(df_in, hide_index=True)
+
+        col2.subheader("Saídas")
+        col2.dataframe(df_out, hide_index=True)
 
     # Convert the "data" column as a datetime datatype
     # Did not converted before displaying with "st.dataframe()" because the unformatted string is easier to read
