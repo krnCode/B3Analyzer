@@ -10,12 +10,12 @@ st.set_page_config(page_title="B3 Analyzer", layout="wide")
 
 # CONSTANTS
 # -------------------------------------------------------------
-dfs = []
+# dfs = []
 
 
 # FUNCTIONS
 # -------------------------------------------------------------
-def convert_to_excel(df: pd.DataFrame):
+def convert_to_excel(df):
     output = BytesIO()
     with pd.ExcelWriter(output, engine="openpyxl") as writer:
         df.to_excel(writer, index=False)
@@ -24,7 +24,8 @@ def convert_to_excel(df: pd.DataFrame):
     return output
 
 
-def create_dataframe(files, dfs):
+def create_df(files):
+    dfs = []
     if files:
         for file in files:
             df = pd.read_excel(io=file)
@@ -38,25 +39,7 @@ def create_dataframe(files, dfs):
         st.markdown("# Faça o upload dos seus extratos na tela lateral 👈")
 
 
-# MAIN APP
-# -------------------------------------------------------------
-with st.sidebar:
-    files = st.file_uploader(
-        label="Envie os extratos da B3 em excel (extensão .xlsx)",
-        accept_multiple_files=True,
-    )
-
-if "files" not in st.session_state:
-    st.session_state.files = files
-
-df = create_dataframe(files, dfs)
-
-# Created a session state for the dataframe so the user don't lose the uploaded files while browsing
-if "df" not in st.session_state:
-    st.session_state["df"] = df
-
-# Display the data in streamlit when the dataframe is created, else display nothing
-if df is not None:
+def clean_df(df):
     # Clean "-" strings from numeric columns and display them as a single dataframe
     df["Preço unitário"] = df["Preço unitário"].replace("-", 0)
     df["Valor da Operação"] = df["Valor da Operação"].replace("-", 0)
@@ -73,6 +56,21 @@ if df is not None:
         df["Quantidade"] * -1,
         df["Quantidade"],
     )
+
+
+# MAIN APP
+# -------------------------------------------------------------
+with st.sidebar:
+    files = st.file_uploader(
+        label="Envie os extratos da B3 em excel (extensão .xlsx)",
+        accept_multiple_files=True,
+    )
+
+df = create_df(files)
+
+# Display the data in streamlit when the dataframe is created, else display nothing
+if df is not None:
+    clean_df(df)
 
     with st.expander("Visualizar Extrato Consolidado"):
         st.markdown("### Extrato Consolidado")
