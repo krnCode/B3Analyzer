@@ -8,11 +8,6 @@ from io import BytesIO
 st.set_page_config(page_title="B3 Analyzer", layout="wide")
 
 
-# CONSTANTS
-# -------------------------------------------------------------
-# dfs = []
-
-
 # FUNCTIONS
 # -------------------------------------------------------------
 def convert_to_excel(df):
