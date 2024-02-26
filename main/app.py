@@ -36,6 +36,7 @@ def create_df(files):
 
 def clean_df(df):
     # Clean "-" strings from numeric columns and display them as a single dataframe
+    df["Data"] = pd.to_datetime(df["Data"], format="%d/%m/%Y")
     df["Preço unitário"] = df["Preço unitário"].replace("-", 0)
     df["Valor da Operação"] = df["Valor da Operação"].replace("-", 0)
 
@@ -55,6 +56,8 @@ def clean_df(df):
 
 # MAIN APP
 # -------------------------------------------------------------
+
+# Sidebar
 with st.sidebar:
     files = st.file_uploader(
         label="Envie os extratos da B3 em excel (extensão .xlsx)",
@@ -93,7 +96,3 @@ if df is not None:
 
         col2.subheader("Saídas")
         col2.dataframe(df_out, hide_index=True)
-
-    # Convert the "data" column as a datetime datatype
-    # Did not converted before displaying with "st.dataframe()" because the unformatted string is easier to read
-    # df["Data"] = pd.to_datetime(df["Data"], format="%d/%m/%Y")
