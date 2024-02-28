@@ -40,7 +40,7 @@ def clean_df(df):
     df["Preço unitário"] = df["Preço unitário"].replace("-", 0)
     df["Valor da Operação"] = df["Valor da Operação"].replace("-", 0)
 
-    # Changing outgoing entries to a negative number
+    # Changing outflow entries to a negative number
     df["Valor da Operação"] = np.where(
         df["Entrada/Saída"] == "Debito",
         df["Valor da Operação"] * -1,
@@ -52,6 +52,23 @@ def clean_df(df):
         df["Quantidade"] * -1,
         df["Quantidade"],
     )
+
+    df["Preço unitário"] = np.where(
+        df["Entrada/Saída"] == "Debito",
+        df["Preço unitário"] * -1,
+        df["Preço unitário"],
+    )
+
+    df = df.sort_values(by="Data", ascending=True)
+
+    return df
+
+
+def get_cumulative_sum(df):
+    # Calculate the cumulative sum for each asset
+    df["Saldo Cumulativo"] = df.groupby("Produto")["Valor da Operação"].cumsum()
+
+    return df
 
 
 # MAIN APP
@@ -68,7 +85,7 @@ df = create_df(files)
 
 # Display the data in streamlit when the dataframe is created, else display nothing
 if df is not None:
-    clean_df(df)
+    df = clean_df(df)
 
     with st.expander("Visualizar Extrato Consolidado"):
         st.markdown("### Extrato Consolidado")
@@ -83,7 +100,7 @@ if df is not None:
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
 
-    # Filter incomning and outgoing entries
+    # Filter inflow and outflow entries
     df_in = df[df["Entrada/Saída"].values == "Credito"]
     df_out = df[df["Entrada/Saída"].values == "Debito"]
 
@@ -96,3 +113,5 @@ if df is not None:
 
         col2.subheader("Saídas")
         col2.dataframe(df_out, hide_index=True)
+
+    st.dataframe(data=get_cumulative_sum(df), hide_index=True)
