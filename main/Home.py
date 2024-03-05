@@ -31,7 +31,7 @@ def create_df(files):
         return df
 
     else:
-        st.markdown("# Faça o upload dos seus extratos na tela lateral 👈")
+        st.markdown("### Faça o upload dos seus extratos na tela lateral 👈")
 
 
 def clean_df(df):
@@ -73,6 +73,9 @@ def clean_df(df):
 
 # MAIN APP
 # -------------------------------------------------------------
+
+# Show App Name
+st.markdown("# B3 Analyzer")
 
 # Sidebar
 with st.sidebar:
