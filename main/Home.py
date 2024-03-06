@@ -1,6 +1,5 @@
 import pandas as pd
 import streamlit as st
-import numpy as np
 from io import BytesIO
 
 # APP PAGE CONFIG
@@ -52,31 +51,26 @@ def create_df(files):
 
 
 def clean_df(df):
-    # Clean "-" strings from numeric columns and display them as a single dataframe
+    # Convert column to datetime
     df["Data"] = pd.to_datetime(df["Data"], format="%d/%m/%Y")
+
+    # Clean "-" strings from numeric columns and display them as a single dataframe
     df["Preço unitário"] = df["Preço unitário"].replace("-", 0)
     df["Valor da Operação"] = df["Valor da Operação"].replace("-", 0)
 
-    # Changing outflow entries to a negative number
-    # df["Valor da Operação"] = np.where(
-    #     df["Entrada/Saída"] == "Debito",
-    #     df["Valor da Operação"] * -1,
-    #     df["Valor da Operação"],
-    # )
-
-    # df["Quantidade"] = np.where(
-    #     df["Entrada/Saída"] == "Debito",
-    #     df["Quantidade"] * -1,
-    #     df["Quantidade"],
-    # )
-
-    # df["Preço unitário"] = np.where(
-    #     df["Entrada/Saída"] == "Debito",
-    #     df["Preço unitário"] * -1,
-    #     df["Preço unitário"],
-    # )
-
+    # Sort dataframe by date
     df = df.sort_values(by="Data", ascending=True)
+
+    # Create custom columns
+    df[["Ticker", "Descrição Ticker"]] = df["Produto"].str.split(
+        pat=" ", n=1, expand=True
+    )
+    df["Descrição Ticker"] = df["Descrição Ticker"].replace(
+        to_replace=r"- ", value="", regex=True
+    )
+
+    # Drop unused columns
+    df = df.drop(columns=["Produto"])
 
     return df
 
