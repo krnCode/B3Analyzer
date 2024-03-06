@@ -31,6 +31,23 @@ def create_df(files):
         return df
 
     else:
+        st.markdown("# B3 Analyzer")
+
+        st.markdown(
+            """
+            Bem vindo ao B3 Analyzer!
+
+            Este app tem o objetivo de fornecer informações sobre os investimentos na bolsa de valores com base nos extratos fornecidos pela B3.
+
+            Faça o upload dos extratos da B3 na tela lateral para que as análises sejam apresentadas.
+            
+            **Dica**: faça o download dos extratos por ano na B3, e faça o upload de todos os extratos para ver as informações consolidadas.
+
+            """
+        )
+
+        st.markdown("---")
+
         st.markdown("### Faça o upload dos seus extratos na tela lateral 👈")
 
 
@@ -41,23 +58,23 @@ def clean_df(df):
     df["Valor da Operação"] = df["Valor da Operação"].replace("-", 0)
 
     # Changing outflow entries to a negative number
-    df["Valor da Operação"] = np.where(
-        df["Entrada/Saída"] == "Debito",
-        df["Valor da Operação"] * -1,
-        df["Valor da Operação"],
-    )
+    # df["Valor da Operação"] = np.where(
+    #     df["Entrada/Saída"] == "Debito",
+    #     df["Valor da Operação"] * -1,
+    #     df["Valor da Operação"],
+    # )
 
-    df["Quantidade"] = np.where(
-        df["Entrada/Saída"] == "Debito",
-        df["Quantidade"] * -1,
-        df["Quantidade"],
-    )
+    # df["Quantidade"] = np.where(
+    #     df["Entrada/Saída"] == "Debito",
+    #     df["Quantidade"] * -1,
+    #     df["Quantidade"],
+    # )
 
-    df["Preço unitário"] = np.where(
-        df["Entrada/Saída"] == "Debito",
-        df["Preço unitário"] * -1,
-        df["Preço unitário"],
-    )
+    # df["Preço unitário"] = np.where(
+    #     df["Entrada/Saída"] == "Debito",
+    #     df["Preço unitário"] * -1,
+    #     df["Preço unitário"],
+    # )
 
     df = df.sort_values(by="Data", ascending=True)
 
@@ -66,9 +83,6 @@ def clean_df(df):
 
 # MAIN APP
 # -------------------------------------------------------------
-
-# Show App Name
-st.markdown("# B3 Analyzer")
 
 # Sidebar
 with st.sidebar:
