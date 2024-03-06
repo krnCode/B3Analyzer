@@ -64,13 +64,6 @@ def clean_df(df):
     return df
 
 
-# def get_cumulative_sum(df):
-#     # Calculate the cumulative sum for each asset
-#     df["Saldo Cumulativo"] = df.groupby("Produto")["Valor da Operação"].cumsum()
-
-#     return df
-
-
 # MAIN APP
 # -------------------------------------------------------------
 
@@ -116,5 +109,3 @@ if df is not None:
 
         col2.subheader("Saídas")
         col2.dataframe(df_out, hide_index=True)
-
-    # st.dataframe(data=get_cumulative_sum(df), hide_index=True)
