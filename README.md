@@ -20,3 +20,9 @@ B3 Analyzer is a Python application that provides information about investments 
 - streamlit
 - numpy
 - openpyxl
+
+## Consider Supporting
+
+If you liked this project, consider supporting me on my Ko-Fi page!
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B3V8QAU)
