@@ -1,7 +1,9 @@
+![B3 Analyzer](./res/logo/B3Analyzer_logo_nobg.png)
+
 # B3 Analyzer
 
 ## Description
-B3 Analyzer is a Python application that provides information about investments in the stock market based on statements provided by B3. The application is built using the Streamlit library and uses Pandas for data manipulation.
+B3 Analyzer is a Python application that provides information about investments you made in the brazillian stock market B3. You just upload your investment statements and the app give data analysis for you. The application is built using the Streamlit library and uses Pandas for data manipulation.
 
 ## Features
 - Upload B3 statements in Excel format.
@@ -11,7 +13,7 @@ B3 Analyzer is a Python application that provides information about investments 
 - Export consolidated statements in Excel format.
 
 ## How to Use
-1. Run the application.
+1. Acess the web app.
 2. Upload your B3 statements in Excel format using the file uploader in the sidebar.
 3. The application will automatically process the statements and present the analyses.
 
