@@ -1,10 +1,20 @@
 import pandas as pd
 import streamlit as st
+import os
 from io import BytesIO
+from pathlib import Path
+from PIL import Image
 
 # APP PAGE CONFIG
 # -------------------------------------------------------------
 st.set_page_config(page_title="B3 Analyzer", layout="wide")
+
+# Path to logo
+current_path = Path(__file__).parent.parent
+img_path = current_path / "res" / "logo"
+img_files = os.listdir(img_path)
+img_file = img_files[0] if img_files else None
+img_file_path = img_path / img_file
 
 
 # FUNCTIONS
@@ -29,34 +39,14 @@ def create_df(files):
 
         return df
 
-    else:
-        st.markdown("# B3 Analyzer")
-
-        st.markdown(
-            """
-            Bem vindo ao B3 Analyzer!
-
-            Este app tem o objetivo de fornecer informações sobre os investimentos na bolsa de valores com base nos extratos fornecidos pela B3.
-
-            Faça o upload dos extratos da B3 na tela lateral para que as análises sejam apresentadas.
-            
-            **Dica**: faça o download dos extratos por ano na B3, e faça o upload de todos os extratos para ver as informações consolidadas.
-
-            """
-        )
-
-        st.markdown("---")
-
-        st.markdown("### Faça o upload dos seus extratos na tela lateral 👈")
-
 
 def clean_df(df):
     # Convert column to datetime
     df["Data"] = pd.to_datetime(df["Data"], format="%d/%m/%Y")
 
     # Clean "-" strings from numeric columns and display them as a single dataframe
-    df["Preço unitário"] = df["Preço unitário"].replace("-", 0)
-    df["Valor da Operação"] = df["Valor da Operação"].replace("-", 0)
+    df["Preço unitário"] = df["Preço unitário"].replace(to_replace={"-": 0})
+    df["Valor da Operação"] = df["Valor da Operação"].replace(to_replace={"-": 0})
 
     # Sort dataframe by date
     df = df.sort_values(by="Data", ascending=True)
@@ -66,7 +56,7 @@ def clean_df(df):
         pat=" ", n=1, expand=True
     )
     df["Descrição Ticker"] = df["Descrição Ticker"].replace(
-        to_replace=r"- ", value="", regex=True
+        to_replace={"- ": ""}, regex=True
     )
 
     # Drop unused columns
@@ -83,6 +73,12 @@ with st.sidebar:
     files = st.file_uploader(
         label="Envie os extratos da B3 em excel (extensão .xlsx)",
         accept_multiple_files=True,
+    )
+
+    st.markdown("---")
+
+    st.markdown(
+        "[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B3V8QAU)"
     )
 
 df = create_df(files)
@@ -117,3 +113,31 @@ if df is not None:
 
         col2.subheader("Saídas")
         col2.dataframe(df_out, hide_index=True)
+
+else:
+    if not img_file:
+        st.write("No images found in directory.")
+
+    else:
+        logo_path = img_path / img_file
+        img = Image.open(logo_path)
+        st.image(img, width=250)
+
+        st.markdown("# B3 Analyzer")
+
+        st.markdown(
+            """
+            Bem vindo ao B3 Analyzer!
+
+            Este app tem o objetivo de fornecer informações sobre os investimentos na bolsa de valores com base nos extratos fornecidos pela B3.
+
+            Faça o upload dos extratos da B3 na tela lateral para que as análises sejam apresentadas.
+            
+            **Dica**: faça o download dos extratos por ano na B3, e faça o upload de todos os extratos para ver as informações consolidadas.
+
+            """
+        )
+
+        st.markdown("---")
+
+        st.markdown("### Faça o upload dos seus extratos na tela lateral 👈")
