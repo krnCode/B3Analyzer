@@ -9,12 +9,22 @@ from PIL import Image
 # -------------------------------------------------------------
 st.set_page_config(page_title="B3 Analyzer", layout="wide")
 
-# Path to logo
+
+# PATH TO LOGO
+# -------------------------------------------------------------
 current_path = Path(__file__).parent.parent
 img_path = current_path / "res" / "logo"
 img_files = os.listdir(img_path)
 img_file = img_files[0] if img_files else None
 img_file_path = img_path / img_file
+
+types_of_income = [
+    "Juros",
+    "Amortização",
+    "Dividendo",
+    "Juros Sobre Capital Próprio",
+    "Rendimento",
+]
 
 
 # FUNCTIONS
@@ -61,6 +71,17 @@ def clean_df(df):
 
     # Drop unused columns
     df = df.drop(columns=["Produto"])
+
+    return df
+
+
+def get_income_by_ticker(df):
+    df = df[df["Movimentação"].isin(types_of_income)]
+    df["Periodo"] = df["Data"].dt.to_period("M")
+    df = df.rename(columns={"Valor da Operação": "Rendimentos"})
+    df = df.drop(columns=["Data"])
+
+    df = df.groupby(["Periodo"])["Rendimentos"].sum()
 
     return df
 
@@ -113,6 +134,12 @@ if df is not None:
 
         col2.subheader("Saídas")
         col2.dataframe(df_out, hide_index=True)
+
+    with st.expander("Visualizar Rendimentos"):
+
+        st.subheader("Rendimentos por Período")
+        st.dataframe(data=get_income_by_ticker(df), use_container_width=True)
+
 
 else:
     if not img_file:
