@@ -1,5 +1,6 @@
 import pandas as pd
 import streamlit as st
+import altair as alt
 import os
 from io import BytesIO
 from pathlib import Path
@@ -96,6 +97,19 @@ def get_income_by_period(df):
     return df
 
 
+def get_income_by_ticker(df):
+    df = df[df["Movimentação"].isin(types_of_income)]
+    df["Mes"] = df["Data"].dt.month
+    df["Ano"] = df["Data"].dt.year
+
+    df = df.groupby(["Ticker", "Ano"])["Valor da Operação"].sum()
+    df = df.unstack().sort_values(by="Ticker", ascending=True)
+    df["Total"] = df.sum(axis=1)
+    df["Média"] = df.filter(regex="[^Total]").mean(axis=1)
+
+    return df
+
+
 # MAIN APP
 # -------------------------------------------------------------
 
@@ -169,6 +183,36 @@ if df is not None:
         )
         st.bar_chart(data=get_income_by_period(df), y="Total", color="#798d82")
 
+        st.markdown("---")
+
+        st.subheader("Rendimentos Totais por Ticker")
+        st.dataframe(
+            data=get_income_by_ticker(df),
+            use_container_width=True,
+            column_config={
+                "Total": st.column_config.NumberColumn(
+                    help="Valor total de rendimentos, por ano",
+                    min_value=0,
+                    step=0.01,
+                ),
+                "Média": st.column_config.NumberColumn(
+                    help="Média de rendimentos, por ano",
+                    min_value=0,
+                    step=0.01,
+                ),
+            },
+        )
+        chart_data_ticker = get_income_by_ticker(df).reset_index()
+        chart = (
+            alt.Chart(chart_data_ticker)
+            .mark_bar()
+            .encode(y="Total", x="Ticker", color="Total")
+        )
+        st.altair_chart(
+            altair_chart=chart,
+            use_container_width=True,
+            theme="streamlit",
+        )
 
 else:
     # Show error message if logo is not found
