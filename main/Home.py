@@ -191,12 +191,12 @@ if df is not None:
             use_container_width=True,
             column_config={
                 "Total": st.column_config.NumberColumn(
-                    help="Valor total de rendimentos, por ano",
+                    help="Valor total de rendimentos",
                     min_value=0,
                     step=0.01,
                 ),
                 "Média": st.column_config.NumberColumn(
-                    help="Média de rendimentos, por ano",
+                    help="Média de rendimentos",
                     min_value=0,
                     step=0.01,
                 ),
