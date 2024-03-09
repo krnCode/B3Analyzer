@@ -25,6 +25,7 @@ img_files = os.listdir(img_path)
 img_file = img_files[0] if img_files else None
 img_file_path = img_path / img_file
 
+# Statements to consider as income
 types_of_income = [
     "Juros",
     "Amortização",
@@ -117,6 +118,7 @@ df = create_df(files)
 if df is not None:
     df = clean_df(df)
 
+    # Expander to show consolidated investment statements and button to export to excel
     with st.expander("Visualizar Extrato Consolidado"):
         st.markdown("### Extrato Consolidado")
         st.dataframe(data=df, use_container_width=True, hide_index=True)
@@ -134,6 +136,7 @@ if df is not None:
     df_in = df[df["Entrada/Saída"].values == "Credito"]
     df_out = df[df["Entrada/Saída"].values == "Debito"]
 
+    # Expander to show inflow/outflow entries
     with st.expander("Visualizar Entras/Saídas"):
 
         col1, col2 = st.columns([1, 1])
@@ -144,6 +147,7 @@ if df is not None:
         col2.subheader("Saídas")
         col2.dataframe(df_out, hide_index=True)
 
+    # Expander to show income data
     with st.expander("Visualizar Rendimentos"):
 
         st.subheader("Rendimentos Totais por Período")
@@ -167,6 +171,7 @@ if df is not None:
 
 
 else:
+    # Show error message if logo is not found
     if not img_file:
         st.write("No images found in directory.")
 
