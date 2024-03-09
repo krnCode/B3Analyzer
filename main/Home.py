@@ -5,6 +5,13 @@ from io import BytesIO
 from pathlib import Path
 from PIL import Image
 
+
+# PANDAS CONFIG
+# -------------------------------------------------------------
+pd.set_option("display.precision", 2)
+pd.get_option("display.precision")
+
+
 # APP PAGE CONFIG
 # -------------------------------------------------------------
 st.set_page_config(page_title="B3 Analyzer", layout="wide")
@@ -75,13 +82,15 @@ def clean_df(df):
     return df
 
 
-def get_income_by_ticker(df):
+def get_income_by_period(df):
     df = df[df["Movimentação"].isin(types_of_income)]
-    df["Periodo"] = df["Data"].dt.to_period("M")
-    df = df.rename(columns={"Valor da Operação": "Rendimentos"})
-    df = df.drop(columns=["Data"])
+    df["Mes"] = df["Data"].dt.month
+    df["Ano"] = df["Data"].dt.year
 
-    df = df.groupby(["Periodo"])["Rendimentos"].sum()
+    df = df.groupby(["Ano", "Mes"])["Valor da Operação"].sum()
+    df = df.unstack(level=1).sort_values(by="Ano", ascending=False)
+    df["Total"] = df.sum(axis=1)
+    df["Média"] = df.filter(regex="[^Total]").mean(axis=1)
 
     return df
 
@@ -137,8 +146,24 @@ if df is not None:
 
     with st.expander("Visualizar Rendimentos"):
 
-        st.subheader("Rendimentos por Período")
-        st.dataframe(data=get_income_by_ticker(df), use_container_width=True)
+        st.subheader("Rendimentos Totais por Período")
+        st.dataframe(
+            data=get_income_by_period(df),
+            use_container_width=True,
+            column_config={
+                "Total": st.column_config.NumberColumn(
+                    help="Valor total de rendimentos, por ano",
+                    min_value=0,
+                    step=0.01,
+                ),
+                "Média": st.column_config.NumberColumn(
+                    help="Média de rendimentos, por ano",
+                    min_value=0,
+                    step=0.01,
+                ),
+            },
+        )
+        st.bar_chart(data=get_income_by_period(df), y="Total", color="#798d82")
 
 
 else:
