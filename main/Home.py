@@ -110,6 +110,20 @@ def get_income_by_ticker(df):
     return df
 
 
+def get_income_by_type(df):
+    df = df[df["Movimentação"].isin(types_of_income)]
+    df = df.rename(columns={"Movimentação": "Tipo"})
+    df["Mes"] = df["Data"].dt.month
+    df["Ano"] = df["Data"].dt.year
+
+    df = df.groupby(["Tipo", "Ano"])["Valor da Operação"].sum()
+    df = df.unstack().sort_values(by="Tipo", ascending=True)
+    df["Total"] = df.sum(axis=1)
+    df["Média"] = df.filter(regex="[^Total]").mean(axis=1)
+
+    return df
+
+
 # MAIN APP
 # -------------------------------------------------------------
 
@@ -202,11 +216,42 @@ if df is not None:
                 ),
             },
         )
-        chart_data_ticker = get_income_by_ticker(df).reset_index()
+        chart_data_type = get_income_by_ticker(df).reset_index()
         chart = (
-            alt.Chart(chart_data_ticker)
+            alt.Chart(chart_data_type)
             .mark_bar()
             .encode(y="Total", x="Ticker", color="Total")
+        )
+        st.altair_chart(
+            altair_chart=chart,
+            use_container_width=True,
+            theme="streamlit",
+        )
+
+        st.markdown("---")
+
+        st.subheader("Rendimentos Totais por Tipo")
+        st.dataframe(
+            data=get_income_by_type(df),
+            use_container_width=True,
+            column_config={
+                "Total": st.column_config.NumberColumn(
+                    help="Valor total de rendimentos",
+                    min_value=0,
+                    step=0.01,
+                ),
+                "Média": st.column_config.NumberColumn(
+                    help="Média de rendimentos",
+                    min_value=0,
+                    step=0.01,
+                ),
+            },
+        )
+        chart_data_type = get_income_by_type(df).reset_index()
+        chart = (
+            alt.Chart(chart_data_type)
+            .mark_bar()
+            .encode(y="Total", x="Tipo", color="Total")
         )
         st.altair_chart(
             altair_chart=chart,
