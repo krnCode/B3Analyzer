@@ -175,6 +175,7 @@ if df is not None:
         col2.subheader("Saídas")
         col2.dataframe(df_out, hide_index=True)
 
+    # INCOME DATA
     # Expander to show income data
     with st.expander("Visualizar Rendimentos"):
 
@@ -195,7 +196,20 @@ if df is not None:
                 ),
             },
         )
-        st.bar_chart(data=get_income_by_period(df), y="Total", color="#798d82")
+        # st.bar_chart(data=get_income_by_period(df), y="Total", color="#798d82")
+
+        chart_data_type = get_income_by_period(df).reset_index()
+        chart = (
+            alt.Chart(chart_data_type)
+            .mark_bar(color="red")
+            .encode(y="Total", x=alt.X("Ano:N"), color="Total")
+            .interactive()
+        )
+        st.altair_chart(
+            altair_chart=chart,
+            use_container_width=True,
+            theme="streamlit",
+        )
 
         st.markdown("---")
 
@@ -221,6 +235,7 @@ if df is not None:
             alt.Chart(chart_data_type)
             .mark_bar()
             .encode(y="Total", x="Ticker", color="Total")
+            .interactive()
         )
         st.altair_chart(
             altair_chart=chart,
@@ -252,6 +267,7 @@ if df is not None:
             alt.Chart(chart_data_type)
             .mark_bar()
             .encode(y="Total", x="Tipo", color="Total")
+            .interactive()
         )
         st.altair_chart(
             altair_chart=chart,
