@@ -217,9 +217,9 @@ if df is not None:
 
         tab_table1, tab_table2, tab_table3 = st.tabs(
             [
-                "Tabela - Rendimentos por Período",
-                "Tabela - Rendimentos por Ticker",
-                "Tabela - Rendimentos por Tipo",
+                "Rendimentos por Período",
+                "Rendimentos por Ticker",
+                "Rendimentos por Tipo",
             ]
         )
 
