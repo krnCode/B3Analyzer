@@ -176,6 +176,7 @@ if df is not None:
         col2.dataframe(df_out, hide_index=True)
 
     # INCOME DATA
+
     # Expander to show income data
     with st.expander("Visualizar Rendimentos"):
 
@@ -197,18 +198,55 @@ if df is not None:
             },
         )
 
-        chart_data_type = get_income_by_period(df).reset_index()
-        chart = (
-            alt.Chart(chart_data_type)
-            .mark_bar(color="red")
-            .encode(y="Total", x=alt.X("Ano:N"), color="Total")
-            .interactive()
+        tab1, tab2, tab3 = st.tabs(
+            [
+                "Gráfico - Rendimentos por Período",
+                "Gráfico - Rendimentos por Ticker",
+                "Gráfico - Rendimentos por Tipo",
+            ]
         )
-        st.altair_chart(
-            altair_chart=chart,
-            use_container_width=True,
-            theme="streamlit",
-        )
+
+        with tab1:
+            chart_data_type = get_income_by_period(df).reset_index()
+            chart = (
+                alt.Chart(chart_data_type)
+                .mark_bar(color="red")
+                .encode(y="Total", x=alt.X("Ano:N"), color="Total")
+                .interactive()
+            )
+            st.altair_chart(
+                altair_chart=chart,
+                use_container_width=True,
+                theme="streamlit",
+            )
+
+        with tab2:
+            chart_data_type = get_income_by_ticker(df).reset_index()
+            chart = (
+                alt.Chart(chart_data_type)
+                .mark_bar()
+                .encode(y="Total", x="Ticker", color="Total")
+                .interactive()
+            )
+            st.altair_chart(
+                altair_chart=chart,
+                use_container_width=True,
+                theme="streamlit",
+            )
+
+        with tab3:
+            chart_data_type = get_income_by_ticker(df).reset_index()
+            chart = (
+                alt.Chart(chart_data_type)
+                .mark_bar()
+                .encode(y="Total", x="Ticker", color="Total")
+                .interactive()
+            )
+            st.altair_chart(
+                altair_chart=chart,
+                use_container_width=True,
+                theme="streamlit",
+            )
 
         st.markdown("---")
 
