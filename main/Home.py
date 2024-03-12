@@ -180,33 +180,34 @@ if df is not None:
     # Expander to show income data
     with st.expander("Visualizar Rendimentos"):
 
-        st.subheader("Rendimentos Totais por Período")
-        st.dataframe(
-            data=get_income_by_period(df),
-            use_container_width=True,
-            column_config={
-                "Total": st.column_config.NumberColumn(
-                    help="Valor total de rendimentos, por ano",
-                    min_value=0,
-                    step=0.01,
-                ),
-                "Média": st.column_config.NumberColumn(
-                    help="Média de rendimentos, por ano",
-                    min_value=0,
-                    step=0.01,
-                ),
-            },
-        )
+        st.subheader("Rendimentos")
 
-        tab1, tab2, tab3 = st.tabs(
+        tab_table1, tab_table2, tab_table3 = st.tabs(
             [
-                "Gráfico - Rendimentos por Período",
-                "Gráfico - Rendimentos por Ticker",
-                "Gráfico - Rendimentos por Tipo",
+                "Tabela - Rendimentos por Período",
+                "Tabela - Rendimentos por Ticker",
+                "Tabela - Rendimentos por Tipo",
             ]
         )
 
-        with tab1:
+        with tab_table1:
+            st.dataframe(
+                data=get_income_by_period(df),
+                use_container_width=True,
+                column_config={
+                    "Total": st.column_config.NumberColumn(
+                        help="Valor total de rendimentos, por ano",
+                        min_value=0,
+                        step=0.01,
+                    ),
+                    "Média": st.column_config.NumberColumn(
+                        help="Média de rendimentos, por ano",
+                        min_value=0,
+                        step=0.01,
+                    ),
+                },
+            )
+
             chart_data_type = get_income_by_period(df).reset_index()
             chart = (
                 alt.Chart(chart_data_type)
@@ -220,7 +221,24 @@ if df is not None:
                 theme="streamlit",
             )
 
-        with tab2:
+        with tab_table2:
+            st.dataframe(
+                data=get_income_by_ticker(df),
+                use_container_width=True,
+                column_config={
+                    "Total": st.column_config.NumberColumn(
+                        help="Valor total de rendimentos",
+                        min_value=0,
+                        step=0.01,
+                    ),
+                    "Média": st.column_config.NumberColumn(
+                        help="Média de rendimentos",
+                        min_value=0,
+                        step=0.01,
+                    ),
+                },
+            )
+
             chart_data_type = get_income_by_ticker(df).reset_index()
             chart = (
                 alt.Chart(chart_data_type)
@@ -234,7 +252,24 @@ if df is not None:
                 theme="streamlit",
             )
 
-        with tab3:
+        with tab_table3:
+            st.dataframe(
+                data=get_income_by_type(df),
+                use_container_width=True,
+                column_config={
+                    "Total": st.column_config.NumberColumn(
+                        help="Valor total de rendimentos",
+                        min_value=0,
+                        step=0.01,
+                    ),
+                    "Média": st.column_config.NumberColumn(
+                        help="Média de rendimentos",
+                        min_value=0,
+                        step=0.01,
+                    ),
+                },
+            )
+
             chart_data_type = get_income_by_ticker(df).reset_index()
             chart = (
                 alt.Chart(chart_data_type)
@@ -250,67 +285,6 @@ if df is not None:
 
         st.markdown("---")
 
-        st.subheader("Rendimentos Totais por Ticker")
-        st.dataframe(
-            data=get_income_by_ticker(df),
-            use_container_width=True,
-            column_config={
-                "Total": st.column_config.NumberColumn(
-                    help="Valor total de rendimentos",
-                    min_value=0,
-                    step=0.01,
-                ),
-                "Média": st.column_config.NumberColumn(
-                    help="Média de rendimentos",
-                    min_value=0,
-                    step=0.01,
-                ),
-            },
-        )
-        chart_data_type = get_income_by_ticker(df).reset_index()
-        chart = (
-            alt.Chart(chart_data_type)
-            .mark_bar()
-            .encode(y="Total", x="Ticker", color="Total")
-            .interactive()
-        )
-        st.altair_chart(
-            altair_chart=chart,
-            use_container_width=True,
-            theme="streamlit",
-        )
-
-        st.markdown("---")
-
-        st.subheader("Rendimentos Totais por Tipo")
-        st.dataframe(
-            data=get_income_by_type(df),
-            use_container_width=True,
-            column_config={
-                "Total": st.column_config.NumberColumn(
-                    help="Valor total de rendimentos",
-                    min_value=0,
-                    step=0.01,
-                ),
-                "Média": st.column_config.NumberColumn(
-                    help="Média de rendimentos",
-                    min_value=0,
-                    step=0.01,
-                ),
-            },
-        )
-        chart_data_type = get_income_by_type(df).reset_index()
-        chart = (
-            alt.Chart(chart_data_type)
-            .mark_bar()
-            .encode(y="Total", x="Tipo", color="Total")
-            .interactive()
-        )
-        st.altair_chart(
-            altair_chart=chart,
-            use_container_width=True,
-            theme="streamlit",
-        )
 
 else:
     # Show error message if logo is not found
