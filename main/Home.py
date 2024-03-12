@@ -81,6 +81,21 @@ def clean_df(df):
     # Drop unused columns
     df = df.drop(columns=["Produto"])
 
+    # Better ordering of columns
+    df = df[
+        [
+            "Entrada/Saída",
+            "Data",
+            "Movimentação",
+            "Ticker",
+            "Descrição Ticker",
+            "Instituição",
+            "Quantidade",
+            "Preço unitário",
+            "Valor da Operação",
+        ]
+    ]
+
     return df
 
 
@@ -149,7 +164,14 @@ if df is not None:
     # Expander to show consolidated investment statements and button to export to excel
     with st.expander("Visualizar Extrato Consolidado"):
         st.markdown("### Extrato Consolidado")
-        st.dataframe(data=df, use_container_width=True, hide_index=True)
+        st.dataframe(
+            data=df,
+            use_container_width=True,
+            hide_index=True,
+            column_config={
+                "Data": st.column_config.DatetimeColumn("Data", format="DD/MM/YYYY")
+            },
+        )
 
         # Convert dataframe in excel format for download
         df_excel = convert_to_excel(df)
@@ -170,13 +192,24 @@ if df is not None:
         col1, col2 = st.columns([1, 1])
 
         col1.subheader("Entradas")
-        col1.dataframe(df_in, hide_index=True)
+        col1.dataframe(
+            df_in,
+            hide_index=True,
+            column_config={
+                "Data": st.column_config.DatetimeColumn("Data", format="DD/MM/YYYY")
+            },
+        )
 
         col2.subheader("Saídas")
-        col2.dataframe(df_out, hide_index=True)
+        col2.dataframe(
+            df_out,
+            hide_index=True,
+            column_config={
+                "Data": st.column_config.DatetimeColumn("Data", format="DD/MM/YYYY")
+            },
+        )
 
     # INCOME DATA
-
     # Expander to show income data
     with st.expander("Visualizar Rendimentos"):
 
