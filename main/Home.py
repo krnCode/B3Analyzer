@@ -181,7 +181,7 @@ if df is not None:
 
         st.subheader("Rendimentos Totais por Período")
         st.dataframe(
-            data=get_income_by_period(df),
+            data=get_income_by_period(df).set_precision(2),
             use_container_width=True,
             column_config={
                 "Total": st.column_config.NumberColumn(
@@ -214,7 +214,7 @@ if df is not None:
 
         st.subheader("Rendimentos Totais por Ticker")
         st.dataframe(
-            data=get_income_by_ticker(df),
+            data=get_income_by_ticker(df).set_precision(2),
             use_container_width=True,
             column_config={
                 "Total": st.column_config.NumberColumn(
@@ -246,7 +246,7 @@ if df is not None:
 
         st.subheader("Rendimentos Totais por Tipo")
         st.dataframe(
-            data=get_income_by_type(df),
+            data=get_income_by_type(df).set_precision(2),
             use_container_width=True,
             column_config={
                 "Total": st.column_config.NumberColumn(
