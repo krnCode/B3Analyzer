@@ -316,8 +316,6 @@ if df is not None:
                 theme="streamlit",
             )
 
-        st.markdown("---")
-
 
 else:
     # Show error message if logo is not found
