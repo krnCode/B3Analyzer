@@ -60,28 +60,17 @@ def create_df(files):
 
 
 def clean_df(df):
-    # Convert column to datetime
     df["Data"] = pd.to_datetime(df["Data"], format="%d/%m/%Y")
-
-    # Clean "-" strings from numeric columns and display them as a single dataframe
     df["Preço unitário"] = df["Preço unitário"].replace(to_replace={"-": 0})
     df["Valor da Operação"] = df["Valor da Operação"].replace(to_replace={"-": 0})
-
-    # Sort dataframe by date
     df = df.sort_values(by="Data", ascending=True)
-
-    # Create custom columns
     df[["Ticker", "Descrição Ticker"]] = df["Produto"].str.split(
         pat=" ", n=1, expand=True
     )
     df["Descrição Ticker"] = df["Descrição Ticker"].replace(
         to_replace={"- ": ""}, regex=True
     )
-
-    # Drop unused columns
     df = df.drop(columns=["Produto"])
-
-    # Better ordering of columns
     df = df[
         [
             "Entrada/Saída",
