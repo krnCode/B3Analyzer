@@ -38,6 +38,9 @@ types_of_income = [
 
 # FUNCTIONS
 # -------------------------------------------------------------
+
+
+# Convert dataframe to excel
 def convert_to_excel(df):
     output = BytesIO()
     with pd.ExcelWriter(output, engine="openpyxl") as writer:
@@ -47,6 +50,7 @@ def convert_to_excel(df):
     return output
 
 
+# Create main df from uploaded files
 def create_df(files):
     dfs = []
     if files:
@@ -59,6 +63,7 @@ def create_df(files):
         return df
 
 
+# Clean main DF
 def clean_df(df):
     df["Data"] = pd.to_datetime(df["Data"], format="%d/%m/%Y")
     df["Preço unitário"] = df["Preço unitário"].replace(to_replace={"-": 0})
@@ -88,6 +93,10 @@ def clean_df(df):
     return df
 
 
+# Create stocks statements dfs
+
+
+# Create income statements dfs
 def get_income_by_period(df):
     df = df[df["Movimentação"].isin(types_of_income)]
     df["Mes"] = df["Data"].dt.month
