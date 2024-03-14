@@ -26,6 +26,14 @@ img_files = os.listdir(img_path)
 img_file = img_files[0] if img_files else None
 img_file_path = img_path / img_file
 
+
+# PATH TO ASSETS LISTING - CSV FILE
+# -------------------------------------------------------------
+listings_path = current_path / "data" / "csv"
+listings_files = os.listdir(listings_path)
+listings_file = listings_files[0] if listings_files else None
+listings_file_path = listings_path / listings_file
+
 # Statements to consider as income
 types_of_income = [
     "Juros",
@@ -38,8 +46,6 @@ types_of_income = [
 
 # FUNCTIONS
 # -------------------------------------------------------------
-
-
 # Convert dataframe to excel
 def convert_to_excel(df):
     output = BytesIO()
