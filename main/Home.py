@@ -40,7 +40,8 @@ df_listings = pd.read_csv(
     header=1,
     on_bad_lines="skip",
     sep=";",
-)
+    usecols=["TckrSymb", "SctyCtgyNm"],
+).dropna(axis=0)
 
 st.dataframe(data=df_listings)
 
