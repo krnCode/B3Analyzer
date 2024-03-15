@@ -1,6 +1,7 @@
 import pandas as pd
 import streamlit as st
 import altair as alt
+import numpy as np
 import os
 from io import BytesIO
 from pathlib import Path
@@ -34,14 +35,18 @@ listings_files = os.listdir(listings_path)
 listings_file = listings_files[0] if listings_files else None
 listings_file_path = listings_path / listings_file
 
-df_listings = pd.read_csv(
-    filepath_or_buffer=listings_file_path,
-    encoding="unicode_escape",
-    header=1,
-    on_bad_lines="skip",
-    sep=";",
-    usecols=["TckrSymb", "SctyCtgyNm"],
-).dropna(axis=0)
+df_listings = (
+    pd.read_csv(
+        filepath_or_buffer=listings_file_path,
+        encoding="unicode_escape",
+        header=1,
+        on_bad_lines="skip",
+        sep=";",
+        usecols=["TckrSymb", "SctyCtgyNm"],
+    )
+    .dropna(axis=0)
+    .rename(columns={"TckrSymb": "Ticker", "SctyCtgyNm": "Tipo do Ticker"})
+)
 
 # st.dataframe(data=df_listings)
 
@@ -232,7 +237,13 @@ if df is not None:
 
         st.subheader("FII - Fundos de Investimento Imobiliário")
 
-        tab1 = st.tabs(["FII por Período", "FII por Ticker", "FII por Área"])
+        tab1, tab2, tab3 = st.tabs(
+            ["FII por Período", "FII por Ticker", "FII por Área"]
+        )
+
+        listings_fii = df_listings[df_listings["Tipo do Ticker"] == "FUNDS"]
+
+        st.dataframe(data=listings_fii)
 
     # INCOME DATA
     # Expander to show income data
