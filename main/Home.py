@@ -197,12 +197,12 @@ if df is not None:
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
 
-    # Filter inflow and outflow entries
-    df_in = df[df["Entrada/Saída"].values == "Credito"]
-    df_out = df[df["Entrada/Saída"].values == "Debito"]
-
     # Expander to show inflow/outflow entries
     with st.expander("Visualizar Entras/Saídas"):
+
+        # Filter inflow and outflow entries
+        df_in = df[df["Entrada/Saída"].values == "Credito"]
+        df_out = df[df["Entrada/Saída"].values == "Debito"]
 
         col1, col2 = st.columns([1, 1])
 
