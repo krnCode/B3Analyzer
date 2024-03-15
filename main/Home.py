@@ -43,7 +43,7 @@ df_listings = pd.read_csv(
     usecols=["TckrSymb", "SctyCtgyNm"],
 ).dropna(axis=0)
 
-st.dataframe(data=df_listings)
+# st.dataframe(data=df_listings)
 
 # Statements to consider as income
 types_of_income = [
@@ -176,6 +176,7 @@ df = create_df(files)
 if df is not None:
     df = clean_df(df)
 
+    # INVESTMENT STATEMENTS
     # Expander to show consolidated investment statements and button to export to excel
     with st.expander("Visualizar Extrato Consolidado"):
         st.markdown("### Extrato Consolidado")
@@ -197,6 +198,7 @@ if df is not None:
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
 
+    # INFLOW/OUTFLOW STATEMENTS
     # Expander to show inflow/outflow entries
     with st.expander("Visualizar Entras/Saídas"):
 
@@ -224,13 +226,21 @@ if df is not None:
             },
         )
 
+    # FUNDS DATA
+    # Expander to show FII data
+    with st.expander("Visualizar FII"):
+
+        st.subheader("FII - Fundos de Investimento Imobiliário")
+
+        tab1 = st.tabs(["FII por Período", "FII por Ticker", "FII por Área"])
+
     # INCOME DATA
     # Expander to show income data
     with st.expander("Visualizar Rendimentos"):
 
         st.subheader("Rendimentos")
 
-        tab_table1, tab_table2, tab_table3 = st.tabs(
+        tab1, tab2, tab3 = st.tabs(
             [
                 "Rendimentos por Período",
                 "Rendimentos por Ticker",
@@ -238,7 +248,7 @@ if df is not None:
             ]
         )
 
-        with tab_table1:
+        with tab1:
             st.dataframe(
                 data=get_income_by_period(df),
                 use_container_width=True,
@@ -269,7 +279,7 @@ if df is not None:
                 theme="streamlit",
             )
 
-        with tab_table2:
+        with tab2:
             st.dataframe(
                 data=get_income_by_ticker(df),
                 use_container_width=True,
@@ -300,7 +310,7 @@ if df is not None:
                 theme="streamlit",
             )
 
-        with tab_table3:
+        with tab3:
             st.dataframe(
                 data=get_income_by_type(df),
                 use_container_width=True,
