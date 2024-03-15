@@ -177,6 +177,7 @@ with st.sidebar:
 
 df = create_df(files)
 
+
 # Display the data in streamlit when the dataframe is created, else display nothing
 if df is not None:
     df = clean_df(df)
@@ -243,7 +244,11 @@ if df is not None:
 
         listings_fii = df_listings[df_listings["Tipo do Ticker"] == "FUNDS"]
 
-        st.dataframe(data=listings_fii)
+        df_fii = df.merge(right=listings_fii, how="inner", on="Ticker")
+        df_fii = df_fii[df_fii["Movimentação"] != "Rendimento"]
+        df_fii = df_fii.sort_values(by="Data")
+
+        st.dataframe(data=df_fii)
 
     # INCOME DATA
     # Expander to show income data
