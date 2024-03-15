@@ -34,6 +34,16 @@ listings_files = os.listdir(listings_path)
 listings_file = listings_files[0] if listings_files else None
 listings_file_path = listings_path / listings_file
 
+df_listings = pd.read_csv(
+    filepath_or_buffer=listings_file_path,
+    encoding="unicode_escape",
+    header=1,
+    on_bad_lines="skip",
+    sep=";",
+)
+
+st.dataframe(data=df_listings)
+
 # Statements to consider as income
 types_of_income = [
     "Juros",
