@@ -48,8 +48,6 @@ df_listings = (
     .rename(columns={"TckrSymb": "Ticker", "SctyCtgyNm": "Tipo do Ticker"})
 )
 
-# st.dataframe(data=df_listings)
-
 # Statements to consider as income
 types_of_income = [
     "Juros",
@@ -246,7 +244,7 @@ if df is not None:
 
         df_fii = df.merge(right=listings_fii, how="inner", on="Ticker")
         df_fii = df_fii[df_fii["Movimentação"] != "Rendimento"]
-        df_fii = df_fii.sort_values(by="Data")
+        df_fii = df_fii.sort_values(by="Data", ascending=True)
 
         st.dataframe(data=df_fii)
 
