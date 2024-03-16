@@ -35,7 +35,7 @@ listings_files = os.listdir(listings_path)
 listings_file = listings_files[0] if listings_files else None
 listings_file_path = listings_path / listings_file
 
-df_listings = (
+df_listings: pd.DataFrame = (
     pd.read_csv(
         filepath_or_buffer=listings_file_path,
         encoding="unicode_escape",
@@ -49,7 +49,7 @@ df_listings = (
 )
 
 # Statements to consider as income
-types_of_income = [
+types_of_income: list = [
     "Juros",
     "Amortização",
     "Dividendo",
@@ -61,7 +61,7 @@ types_of_income = [
 # FUNCTIONS
 # -------------------------------------------------------------
 # Convert dataframe to excel
-def convert_to_excel(df):
+def convert_to_excel(df: pd.DataFrame) -> BytesIO:
     output = BytesIO()
     with pd.ExcelWriter(output, engine="openpyxl") as writer:
         df.to_excel(writer, index=False)
@@ -71,7 +71,7 @@ def convert_to_excel(df):
 
 
 # Create main df from uploaded files
-def create_df(files):
+def create_df(files) -> pd.DataFrame:
     dfs = []
     if files:
         for file in files:
@@ -84,7 +84,7 @@ def create_df(files):
 
 
 # Clean main DF
-def clean_df(df):
+def clean_df(df: pd.DataFrame) -> pd.DataFrame:
     df["Data"] = pd.to_datetime(df["Data"], format="%d/%m/%Y")
     df["Preço unitário"] = df["Preço unitário"].replace(to_replace={"-": 0})
     df["Valor da Operação"] = df["Valor da Operação"].replace(to_replace={"-": 0})
@@ -116,12 +116,20 @@ def clean_df(df):
 # Create stocks statements dfs
 
 
+# Create funds statements dfs
+def create_df_fii(df_listings: pd.DataFrame, df: pd.DataFrame) -> pd.DataFrame:
+    listings_fii = df_listings[df_listings["Tipo do Ticker"] == "FUNDS"]
+    df_fii = df.merge(right=listings_fii, how="inner", on="Ticker")
+    df_fii = df_fii[df_fii["Movimentação"] != "Rendimento"]
+    df_fii = df_fii.sort_values(by="Data", ascending=True)
+    st.dataframe(data=df_fii)
+
+
 # Create income statements dfs
-def get_income_by_period(df):
+def get_income_by_period(df: pd.DataFrame) -> pd.DataFrame:
     df = df[df["Movimentação"].isin(types_of_income)]
     df["Mes"] = df["Data"].dt.month
     df["Ano"] = df["Data"].dt.year
-
     df = df.groupby(["Ano", "Mes"])["Valor da Operação"].sum()
     df = df.unstack(level=1).sort_values(by="Ano", ascending=False)
     df["Total"] = df.sum(axis=1)
@@ -130,11 +138,10 @@ def get_income_by_period(df):
     return df
 
 
-def get_income_by_ticker(df):
+def get_income_by_ticker(df: pd.DataFrame) -> pd.DataFrame:
     df = df[df["Movimentação"].isin(types_of_income)]
     df["Mes"] = df["Data"].dt.month
     df["Ano"] = df["Data"].dt.year
-
     df = df.groupby(["Ticker", "Ano"])["Valor da Operação"].sum()
     df = df.unstack().sort_values(by="Ticker", ascending=True)
     df["Total"] = df.sum(axis=1)
@@ -143,12 +150,11 @@ def get_income_by_ticker(df):
     return df
 
 
-def get_income_by_type(df):
+def get_income_by_type(df: pd.DataFrame) -> pd.DataFrame:
     df = df[df["Movimentação"].isin(types_of_income)]
     df = df.rename(columns={"Movimentação": "Tipo"})
     df["Mes"] = df["Data"].dt.month
     df["Ano"] = df["Data"].dt.year
-
     df = df.groupby(["Tipo", "Ano"])["Valor da Operação"].sum()
     df = df.unstack().sort_values(by="Tipo", ascending=True)
     df["Total"] = df.sum(axis=1)
@@ -173,10 +179,12 @@ with st.sidebar:
         "[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B3V8QAU)"
     )
 
-df = create_df(files)
+df: pd.DataFrame = create_df(files)
 
 
 # Display the data in streamlit when the dataframe is created, else display nothing
+
+
 if df is not None:
     df = clean_df(df)
 
@@ -240,13 +248,7 @@ if df is not None:
             ["FII por Período", "FII por Ticker", "FII por Área"]
         )
 
-        listings_fii = df_listings[df_listings["Tipo do Ticker"] == "FUNDS"]
-
-        df_fii = df.merge(right=listings_fii, how="inner", on="Ticker")
-        df_fii = df_fii[df_fii["Movimentação"] != "Rendimento"]
-        df_fii = df_fii.sort_values(by="Data", ascending=True)
-
-        st.dataframe(data=df_fii)
+        create_df_fii(df_listings, df)
 
     # INCOME DATA
     # Expander to show income data
