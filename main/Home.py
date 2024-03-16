@@ -35,7 +35,7 @@ listings_files = os.listdir(listings_path)
 listings_file = listings_files[0] if listings_files else None
 listings_file_path = listings_path / listings_file
 
-df_listings = (
+df_listings: pd.DataFrame = (
     pd.read_csv(
         filepath_or_buffer=listings_file_path,
         encoding="unicode_escape",
