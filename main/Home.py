@@ -122,12 +122,19 @@ def create_df_fii(df_listings: pd.DataFrame, df: pd.DataFrame) -> pd.DataFrame:
     df_fii = df.merge(right=listings_fii, how="inner", on="Ticker")
     df_fii = df_fii[df_fii["Movimentação"] != "Rendimento"]
     df_fii = df_fii.sort_values(by="Data", ascending=True)
+
+    return df_fii
+
+
+def get_fii_by_period(df_fii: pd.DataFrame) -> pd.DataFrame:
     df_fii["Mes"] = df_fii["Data"].dt.month
     df_fii["Ano"] = df_fii["Data"].dt.year
     df_fii = df_fii.groupby(["Ano", "Mes"])["Valor da Operação"].sum()
     df_fii = (
         df_fii.unstack(level=1).sort_values(by="Ano", ascending=False).fillna(value=0)
     )
+    df_fii["Total"] = df_fii.sum(axis=1)
+    df_fii["Média"] = df_fii.filter(regex="[^Total]").mean(axis=1)
 
     return df_fii
 
@@ -255,7 +262,25 @@ if df is not None:
             ["FII por Período", "FII por Ticker", "FII por Área"]
         )
 
-        st.dataframe(data=create_df_fii(df_listings, df))
+        df_fii = create_df_fii(df_listings=df_listings, df=df)
+
+        with tab1:
+            st.dataframe(
+                data=get_fii_by_period(df_fii=df_fii), use_container_width=True
+            )
+
+            chart_data_type = get_fii_by_period(df_fii=df_fii).reset_index()
+            chart = (
+                alt.Chart(chart_data_type)
+                .mark_bar(color="red")
+                .encode(y="Total", x=alt.X("Ano:N"), color="Ano")
+                .interactive()
+            )
+            st.altair_chart(
+                altair_chart=chart,
+                use_container_width=True,
+                theme="streamlit",
+            )
 
     # INCOME DATA
     # Expander to show income data
