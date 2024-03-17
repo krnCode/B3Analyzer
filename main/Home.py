@@ -104,6 +104,16 @@ def create_df_fii(df: pd.DataFrame) -> pd.DataFrame:
         )
     ]
     df_fii = df_fii[df_fii["Movimentação"] != "Rendimento"]
+    df_fii["Valor da Operação"] = np.where(
+        df_fii["Movimentação"] == "Amortização",
+        df_fii["Valor da Operação"] * -1,
+        df_fii["Valor da Operação"],
+    )
+    df_fii["Valor da Operação"] = np.where(
+        df_fii["Movimentação"] == "Resgate",
+        df_fii["Valor da Operação"] * -1,
+        df_fii["Valor da Operação"],
+    )
     df_fii = df_fii.sort_values(by="Data", ascending=True)
 
     return df_fii
@@ -256,7 +266,7 @@ if df is not None:
             chart = (
                 alt.Chart(chart_data_type)
                 .mark_bar(color="red")
-                .encode(y="Total", x=alt.X("Ano:N"), color="Ano")
+                .encode(y="Total", x=alt.X("Ano:N"), color="Total")
                 .interactive()
             )
             st.altair_chart(
