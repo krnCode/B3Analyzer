@@ -103,6 +103,7 @@ def create_df_fii(df: pd.DataFrame) -> pd.DataFrame:
             "FII|INVESTIMENTO IMOBILIARIO|INVESTIMENTO IMOBILIÁRIO|INV IMOB"
         )
     ]
+    df_fii = df_fii[df_fii["Ticker"].str.contains("11")]
     df_fii = df_fii[df_fii["Movimentação"] != "Rendimento"]
     df_fii["Valor da Operação"] = np.where(
         df_fii["Movimentação"] == "Amortização",
@@ -125,6 +126,19 @@ def get_fii_by_period(df_fii: pd.DataFrame) -> pd.DataFrame:
     df_fii = df_fii.groupby(["Ano", "Mes"])["Valor da Operação"].sum()
     df_fii = (
         df_fii.unstack(level=1).sort_values(by="Ano", ascending=False).fillna(value=0)
+    )
+    df_fii["Total"] = df_fii.sum(axis=1)
+    df_fii["Média"] = df_fii.filter(regex="[^Total]").mean(axis=1)
+
+    return df_fii
+
+
+def get_fii_by_ticker(df_fii: pd.DataFrame) -> pd.DataFrame:
+    df_fii["Mes"] = df_fii["Data"].dt.month
+    df_fii["Ano"] = df_fii["Data"].dt.year
+    df_fii = df_fii.groupby(["Ticker", "Ano"])["Valor da Operação"].sum()
+    df_fii = (
+        df_fii.unstack(level=1).sort_values(by="Ticker", ascending=True).fillna(value=0)
     )
     df_fii["Total"] = df_fii.sum(axis=1)
     df_fii["Média"] = df_fii.filter(regex="[^Total]").mean(axis=1)
@@ -267,6 +281,24 @@ if df is not None:
                 alt.Chart(chart_data_type)
                 .mark_bar(color="red")
                 .encode(y="Total", x=alt.X("Ano:N"), color="Total")
+                .interactive()
+            )
+            st.altair_chart(
+                altair_chart=chart,
+                use_container_width=True,
+                theme="streamlit",
+            )
+
+        with tab2:
+            st.dataframe(
+                data=get_fii_by_ticker(df_fii=df_fii), use_container_width=True
+            )
+
+            chart_data_type = get_fii_by_ticker(df_fii=df_fii).reset_index()
+            chart = (
+                alt.Chart(chart_data_type)
+                .mark_bar(color="red")
+                .encode(y="Total", x=alt.X("Ticker"), color="Total")
                 .interactive()
             )
             st.altair_chart(
