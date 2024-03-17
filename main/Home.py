@@ -265,9 +265,7 @@ if df is not None:
 
         st.subheader("FII - Fundos de Investimento Imobiliário")
 
-        tab1, tab2, tab3 = st.tabs(
-            ["FII por Período", "FII por Ticker", "FII por Área"]
-        )
+        tab1, tab2 = st.tabs(["FII por Período", "FII por Ticker"])
 
         df_fii = create_df_fii(df=df)
 
