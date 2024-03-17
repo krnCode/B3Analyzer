@@ -28,26 +28,6 @@ img_file = img_files[0] if img_files else None
 img_file_path = img_path / img_file
 
 
-# PATH TO ASSETS LISTING - CSV FILE
-# -------------------------------------------------------------
-listings_path = current_path / "data" / "csv"
-listings_files = os.listdir(listings_path)
-listings_file = listings_files[0] if listings_files else None
-listings_file_path = listings_path / listings_file
-
-df_listings: pd.DataFrame = (
-    pd.read_csv(
-        filepath_or_buffer=listings_file_path,
-        encoding="unicode_escape",
-        header=1,
-        on_bad_lines="skip",
-        sep=";",
-        usecols=["TckrSymb", "SctyCtgyNm"],
-    )
-    .dropna(axis=0)
-    .rename(columns={"TckrSymb": "Ticker", "SctyCtgyNm": "Tipo do Ticker"})
-)
-
 # Statements to consider as income
 types_of_income: list = [
     "Juros",
@@ -117,9 +97,12 @@ def clean_df(df: pd.DataFrame) -> pd.DataFrame:
 
 
 # Create funds statements dfs
-def create_df_fii(df_listings: pd.DataFrame, df: pd.DataFrame) -> pd.DataFrame:
-    listings_fii = df_listings[df_listings["Tipo do Ticker"] == "FUNDS"]
-    df_fii = df.merge(right=listings_fii, how="inner", on="Ticker")
+def create_df_fii(df: pd.DataFrame) -> pd.DataFrame:
+    df_fii = df[
+        df["Descrição Ticker"].str.contains(
+            "FII|INVESTIMENTO IMOBILIARIO|INVESTIMENTO IMOBILIÁRIO|INV IMOB"
+        )
+    ]
     df_fii = df_fii[df_fii["Movimentação"] != "Rendimento"]
     df_fii = df_fii.sort_values(by="Data", ascending=True)
 
@@ -262,7 +245,7 @@ if df is not None:
             ["FII por Período", "FII por Ticker", "FII por Área"]
         )
 
-        df_fii = create_df_fii(df_listings=df_listings, df=df)
+        df_fii = create_df_fii(df=df)
 
         with tab1:
             st.dataframe(
