@@ -186,28 +186,54 @@ def get_income_by_type(df: pd.DataFrame) -> pd.DataFrame:
 
 # MAIN APP
 # -------------------------------------------------------------
-
-# Sidebar
+# Sidebar - Files
 with st.sidebar:
     files = st.file_uploader(
         label="Envie os extratos da B3 em excel (extensão .xlsx)",
         accept_multiple_files=True,
     )
 
-    st.markdown("---")
 
-    st.markdown(
-        "[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B3V8QAU)"
-    )
-
+# Main df
 df: pd.DataFrame = create_df(files)
 
 
 # Display the data in streamlit when the dataframe is created, else display nothing
-
-
 if df is not None:
     df = clean_df(df)
+
+    # Filters
+    with st.sidebar:
+        st.markdown("Filtros:")
+
+        statement = st.multiselect(
+            label="Movimentação",
+            options=df["Movimentação"].sort_values(ascending=True).unique(),
+            placeholder="",
+        )
+        ticker = st.multiselect(
+            label="Ticker",
+            options=df["Ticker"].sort_values(ascending=True).unique(),
+            placeholder="",
+        )
+        ticker_descr = st.multiselect(
+            label="Descrição do ticker",
+            options=df["Descrição Ticker"].sort_values(ascending=True).unique(),
+            placeholder="",
+        )
+        broker = st.multiselect(
+            label="Corretora",
+            options=df["Instituição"].sort_values(ascending=True).unique(),
+            placeholder="",
+        )
+
+        st.markdown("---")
+
+        st.markdown(
+            "[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B3V8QAU)"
+        )
+
+        df_filtered = df.query("Ticker == @ticker")
 
     # INVESTMENT STATEMENTS
     # Expander to show consolidated investment statements and button to export to excel
@@ -441,3 +467,10 @@ else:
         st.markdown("---")
 
         st.markdown("### Faça o upload dos seus extratos na tela lateral 👈")
+
+        with st.sidebar:
+            st.markdown("---")
+
+            st.markdown(
+                "[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B3V8QAU)"
+            )
