@@ -50,6 +50,16 @@ def convert_to_excel(df: pd.DataFrame) -> BytesIO:
     return output
 
 
+def convert_to_excel_multisheets(dfs: list, sheet_names: list) -> BytesIO:
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine="openpyxl") as writer:
+        for df, sheet_name in zip(dfs, sheet_names):
+            df.to_excel(writer, sheet_name=sheet_name, index=False)
+    output.seek(0)
+
+    return output
+
+
 # Create main df from uploaded files
 def create_df(files) -> pd.DataFrame:
     dfs = []
@@ -267,6 +277,7 @@ if df is not None:
             data=df_excel,
             label="Exportar Excel",
             file_name="extrato_consolidado_b3",
+            key="extrato_consolidado_b3",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
 
@@ -296,6 +307,17 @@ if df is not None:
             column_config={
                 "Data": st.column_config.DatetimeColumn("Data", format="DD/MM/YYYY")
             },
+        )
+
+        dfs = [df_in, df_out]
+        sheet_names = ["b3consolidado_entradas", "b3consolidado_saidas"]
+        df_excel = convert_to_excel_multisheets(dfs=dfs, sheet_names=sheet_names)
+        st.download_button(
+            data=df_excel,
+            label="Exportar Excel",
+            file_name="extrato_consolidado_entradas_saidas_b3",
+            key="extrato_consolidado_entradas_saidas_b3",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
 
     # FUNDS DATA
