@@ -193,6 +193,8 @@ with st.sidebar:
         accept_multiple_files=True,
     )
 
+    st.markdown("---")
+
 
 # Main df
 df: pd.DataFrame = create_df(files)
@@ -209,21 +211,19 @@ if df is not None:
         statement = st.multiselect(
             label="Movimentação",
             options=df["Movimentação"].sort_values(ascending=True).unique(),
+            default=None,
             placeholder="",
         )
         ticker = st.multiselect(
             label="Ticker",
             options=df["Ticker"].sort_values(ascending=True).unique(),
-            placeholder="",
-        )
-        ticker_descr = st.multiselect(
-            label="Descrição do ticker",
-            options=df["Descrição Ticker"].sort_values(ascending=True).unique(),
+            default=None,
             placeholder="",
         )
         broker = st.multiselect(
             label="Corretora",
             options=df["Instituição"].sort_values(ascending=True).unique(),
+            default=None,
             placeholder="",
         )
 
@@ -233,14 +233,27 @@ if df is not None:
             "[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B3V8QAU)"
         )
 
-        df_filtered = df.query("Ticker == @ticker")
+    query = []
+    if statement:
+        query.append(f"Movimentação == {statement}")
+
+    if ticker:
+        query.append(f"Ticker == {ticker}")
+
+    if broker:
+        query.append(f"Instituição == {broker}")
+
+    if query:
+        df_filtered = df.query(" and ".join(query))
+    else:
+        df_filtered = df
 
     # INVESTMENT STATEMENTS
     # Expander to show consolidated investment statements and button to export to excel
     with st.expander("Visualizar Extrato Consolidado"):
         st.markdown("### Extrato Consolidado")
         st.dataframe(
-            data=df,
+            data=df_filtered,
             use_container_width=True,
             hide_index=True,
             column_config={
@@ -249,7 +262,7 @@ if df is not None:
         )
 
         # Convert dataframe in excel format for download
-        df_excel = convert_to_excel(df)
+        df_excel = convert_to_excel(df_filtered)
         st.download_button(
             data=df_excel,
             label="Exportar Excel",
@@ -262,8 +275,8 @@ if df is not None:
     with st.expander("Visualizar Entras/Saídas"):
 
         # Filter inflow and outflow entries
-        df_in = df[df["Entrada/Saída"].values == "Credito"]
-        df_out = df[df["Entrada/Saída"].values == "Debito"]
+        df_in = df_filtered[df_filtered["Entrada/Saída"].values == "Credito"]
+        df_out = df_filtered[df_filtered["Entrada/Saída"].values == "Debito"]
 
         col1, col2 = st.columns([1, 1])
 
@@ -293,7 +306,7 @@ if df is not None:
 
         tab1, tab2 = st.tabs(["FII por Período", "FII por Ticker"])
 
-        df_fii = create_df_fii(df=df)
+        df_fii = create_df_fii(df=df_filtered)
 
         with tab1:
             st.dataframe(
@@ -347,7 +360,7 @@ if df is not None:
 
         with tab1:
             st.dataframe(
-                data=get_income_by_period(df),
+                data=get_income_by_period(df_filtered),
                 use_container_width=True,
                 column_config={
                     "Total": st.column_config.NumberColumn(
@@ -363,7 +376,7 @@ if df is not None:
                 },
             )
 
-            chart_data_type = get_income_by_period(df).reset_index()
+            chart_data_type = get_income_by_period(df_filtered).reset_index()
             chart = (
                 alt.Chart(chart_data_type)
                 .mark_bar(color="red")
@@ -378,7 +391,7 @@ if df is not None:
 
         with tab2:
             st.dataframe(
-                data=get_income_by_ticker(df),
+                data=get_income_by_ticker(df_filtered),
                 use_container_width=True,
                 column_config={
                     "Total": st.column_config.NumberColumn(
@@ -394,7 +407,7 @@ if df is not None:
                 },
             )
 
-            chart_data_type = get_income_by_ticker(df).reset_index()
+            chart_data_type = get_income_by_ticker(df_filtered).reset_index()
             chart = (
                 alt.Chart(chart_data_type)
                 .mark_bar()
@@ -409,7 +422,7 @@ if df is not None:
 
         with tab3:
             st.dataframe(
-                data=get_income_by_type(df),
+                data=get_income_by_type(df_filtered),
                 use_container_width=True,
                 column_config={
                     "Total": st.column_config.NumberColumn(
@@ -425,7 +438,7 @@ if df is not None:
                 },
             )
 
-            chart_data_type = get_income_by_ticker(df).reset_index()
+            chart_data_type = get_income_by_ticker(df_filtered).reset_index()
             chart = (
                 alt.Chart(chart_data_type)
                 .mark_bar()
