@@ -482,7 +482,6 @@ else:
         st.markdown("### Faça o upload dos seus extratos na tela lateral 👈")
 
         with st.sidebar:
-            st.markdown("---")
 
             st.markdown(
                 "[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B3V8QAU)"
