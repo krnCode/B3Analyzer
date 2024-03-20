@@ -260,7 +260,7 @@ if df is not None:
 
     # INVESTMENT STATEMENTS
     # Expander to show consolidated investment statements and button to export to excel
-    with st.expander("Visualizar Extrato Consolidado"):
+    with st.expander("Visualizar Extrato Consolidado", expanded=True):
         st.markdown("### Extrato Consolidado")
         st.dataframe(
             data=df_filtered,
@@ -283,7 +283,7 @@ if df is not None:
 
     # INFLOW/OUTFLOW STATEMENTS
     # Expander to show inflow/outflow entries
-    with st.expander("Visualizar Entras/Saídas"):
+    with st.expander("Visualizar Entras/Saídas", expanded=True):
 
         # Filter inflow and outflow entries
         df_in = df_filtered[df_filtered["Entrada/Saída"].values == "Credito"]
@@ -322,7 +322,7 @@ if df is not None:
 
     # FUNDS DATA
     # Expander to show FII data
-    with st.expander("Visualizar FII"):
+    with st.expander("Visualizar FII", expanded=True):
 
         st.subheader("FII - Fundos de Investimento Imobiliário")
 
@@ -368,7 +368,7 @@ if df is not None:
 
     # INCOME DATA
     # Expander to show income data
-    with st.expander("Visualizar Rendimentos"):
+    with st.expander("Visualizar Rendimentos", expanded=True):
 
         st.subheader("Rendimentos")
 
@@ -460,11 +460,11 @@ if df is not None:
                 },
             )
 
-            chart_data_type = get_income_by_ticker(df_filtered).reset_index()
+            chart_data_type = get_income_by_type(df_filtered).reset_index()
             chart = (
                 alt.Chart(chart_data_type)
                 .mark_bar()
-                .encode(y="Total", x="Ticker", color="Total")
+                .encode(y="Total", x="Tipo", color="Total")
                 .interactive()
             )
             st.altair_chart(
