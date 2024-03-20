@@ -243,6 +243,7 @@ if df is not None:
             "[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B3V8QAU)"
         )
 
+    # Filters logic
     query = []
     if statement:
         query.append(f"Movimentação == {statement}")
