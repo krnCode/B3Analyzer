@@ -106,13 +106,63 @@ def clean_df(df: pd.DataFrame) -> pd.DataFrame:
 # Create stocks statements dfs
 
 
+# Creae futures statements dfs
+def create_df_futures(df: pd.DataFrame) -> pd.DataFrame:
+    df_futures = df[df["Descrição Ticker"].str.contains("WDO|WIN")].copy()
+    df_futures["Descrição Ticker"] = (
+        df_futures["Descrição Ticker"] + " - " + df_futures["Ticker"]
+    )
+    df_futures["Preço unitário"] = np.where(
+        df_futures["Movimentação"] == "Compra",
+        df_futures["Preço unitário"] * -1,
+        df_futures["Preço unitário"],
+    )
+    df_futures["Ticker"] = df_futures["Descrição Ticker"].str[:6]
+    df_futures["Valor/Ponto"] = df_futures["Ticker"].apply(
+        lambda x: 5 if "WDO" in x[:3] else (0.20 if "WIN" in x[:3] else 0)
+    )
+    df_futures = df_futures.sort_values(by="Data", ascending=True)
+
+    return df_futures
+
+
+def get_futures_by_period(df_futures: pd.DataFrame) -> pd.DataFrame:
+    df_futures["Mes"] = df_futures["Data"].dt.month
+    df_futures["Ano"] = df_futures["Data"].dt.year
+    df_futures = df_futures.groupby(["Ano", "Mes", "Ticker"])["Preço unitário"].sum()
+    df_futures = (
+        df_futures.unstack(level=1)
+        .sort_values(by="Ano", ascending=False)
+        .fillna(value=0)
+    )
+    df_futures["Total"] = df_futures.sum(axis=1)
+    df_futures["Média"] = df_futures.filter(regex="[^Total]").mean(axis=1)
+
+    return df_futures
+
+
+def get_futures_by_ticker(df_futures: pd.DataFrame) -> pd.DataFrame:
+    df_futures["Mes"] = df_futures["Data"].dt.month
+    df_futures["Ano"] = df_futures["Data"].dt.year
+    df_futures = df_futures.groupby(["Ticker", "Ano"])["Preço unitário"].sum()
+    df_futures = (
+        df_futures.unstack(level=1)
+        .sort_values(by="Ticker", ascending=True)
+        .fillna(value=0)
+    )
+    df_futures["Total"] = df_futures.sum(axis=1)
+    df_futures["Média"] = df_futures.filter(regex="[^Total]").mean(axis=1)
+
+    return df_futures
+
+
 # Create funds statements dfs
 def create_df_fii(df: pd.DataFrame) -> pd.DataFrame:
     df_fii = df[
         df["Descrição Ticker"].str.contains(
             "FII|INVESTIMENTO IMOBILIARIO|INVESTIMENTO IMOBILIÁRIO|INV IMOB"
         )
-    ]
+    ].copy()
     df_fii = df_fii[df_fii["Ticker"].str.contains("11")]
     df_fii = df_fii[df_fii["Movimentação"] != "Rendimento"]
     df_fii["Valor da Operação"] = np.where(
@@ -466,6 +516,83 @@ if df is not None:
                 alt.Chart(chart_data_type)
                 .mark_bar()
                 .encode(y="Total", x="Tipo", color="Total")
+                .interactive()
+            )
+            st.altair_chart(
+                altair_chart=chart,
+                use_container_width=True,
+                theme="streamlit",
+            )
+
+    # FUTURES DATA
+    # Expander to show futures data
+    with st.expander("Visualizar Futuros", expanded=True):
+
+        st.subheader("Futuros")
+
+        tab1, tab2 = st.tabs(
+            [
+                "Ativos Futuros por Período",
+                "Ativos Futuros por Ticker",
+            ]
+        )
+
+        df_futures = create_df_futures(df=df_filtered)
+
+        with tab1:
+            st.dataframe(
+                data=get_futures_by_period(df_futures),
+                use_container_width=True,
+                column_config={
+                    "Total": st.column_config.NumberColumn(
+                        help="Valor total de pontos por ativo futuro, por ano",
+                        min_value=0,
+                        step=0.01,
+                    ),
+                    "Média": st.column_config.NumberColumn(
+                        help="Média de pontos por ativo futuro, por ano",
+                        min_value=0,
+                        step=0.01,
+                    ),
+                },
+            )
+
+            chart_data_type = get_futures_by_period(df_futures).reset_index()
+            chart = (
+                alt.Chart(chart_data_type)
+                .mark_bar(color="red")
+                .encode(y="Total", x=alt.X("Ano:N"), color="Ticker")
+                .interactive()
+            )
+            st.altair_chart(
+                altair_chart=chart,
+                use_container_width=True,
+                theme="streamlit",
+            )
+
+        with tab2:
+            st.dataframe(
+                data=get_futures_by_ticker(df_futures),
+                use_container_width=True,
+                column_config={
+                    "Total": st.column_config.NumberColumn(
+                        help="Valor total de pontos",
+                        min_value=0,
+                        step=0.01,
+                    ),
+                    "Média": st.column_config.NumberColumn(
+                        help="Média de pontos",
+                        min_value=0,
+                        step=0.01,
+                    ),
+                },
+            )
+
+            chart_data_type = get_futures_by_ticker(df_futures).reset_index()
+            chart = (
+                alt.Chart(chart_data_type)
+                .mark_bar()
+                .encode(y="Total", x="Ticker", color="Ticker")
                 .interactive()
             )
             st.altair_chart(
