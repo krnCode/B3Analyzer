@@ -112,14 +112,11 @@ def create_df_futures(df: pd.DataFrame) -> pd.DataFrame:
     df_futures["Descrição Ticker"] = (
         df_futures["Descrição Ticker"] + " - " + df_futures["Ticker"]
     )
+    df_futures["Ticker"] = df_futures["Descrição Ticker"].str[:6]
     df_futures["Preço unitário"] = np.where(
         df_futures["Movimentação"] == "Compra",
         df_futures["Preço unitário"] * -1,
         df_futures["Preço unitário"],
-    )
-    df_futures["Ticker"] = df_futures["Descrição Ticker"].str[:6]
-    df_futures["Valor/Ponto"] = df_futures["Ticker"].apply(
-        lambda x: 5 if "WDO" in x[:3] else (0.20 if "WIN" in x[:3] else 0)
     )
     df_futures = df_futures.sort_values(by="Data", ascending=True)
 
@@ -127,14 +124,17 @@ def create_df_futures(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def get_futures_by_period(df_futures: pd.DataFrame) -> pd.DataFrame:
-    df_futures["Mes"] = df_futures["Data"].dt.month
-    df_futures["Ano"] = df_futures["Data"].dt.year
-    df_futures = df_futures.groupby(["Ano", "Mes", "Ticker"])["Preço unitário"].sum()
+    df_futures = df_futures.groupby(["Data", "Ticker"])["Preço unitário"].sum()
     df_futures = (
         df_futures.unstack(level=1)
-        .sort_values(by="Ano", ascending=False)
+        .sort_values(by="Data", ascending=True)
         .fillna(value=0)
     )
+    for ticker in df_futures.columns:
+        if "WDO" in ticker:
+            df_futures[f"{ticker}"] = df_futures[ticker] * 10
+        elif "WIN" in ticker:
+            df_futures[f"{ticker}"] = df_futures[ticker] * 0.20
     df_futures["Total"] = df_futures.sum(axis=1)
     df_futures["Média"] = df_futures.filter(regex="[^Total]").mean(axis=1)
 
@@ -149,6 +149,14 @@ def get_futures_by_ticker(df_futures: pd.DataFrame) -> pd.DataFrame:
         df_futures.unstack(level=1)
         .sort_values(by="Ticker", ascending=True)
         .fillna(value=0)
+    )
+    df_futures = df_futures.apply(
+        lambda row: (
+            row * 10
+            if "WDO" in row.name
+            else (row * 0.20 if "WIN" in row.name else row)
+        ),
+        axis=1,
     )
     df_futures["Total"] = df_futures.sum(axis=1)
     df_futures["Média"] = df_futures.filter(regex="[^Total]").mean(axis=1)
@@ -532,8 +540,8 @@ if df is not None:
 
         tab1, tab2 = st.tabs(
             [
-                "Ativos Futuros por Período",
-                "Ativos Futuros por Ticker",
+                "Ganhos/Perdas por Dia",
+                "Ganhos/Perdas por Ticker",
             ]
         )
 
@@ -544,6 +552,9 @@ if df is not None:
                 data=get_futures_by_period(df_futures),
                 use_container_width=True,
                 column_config={
+                    "Data": st.column_config.DatetimeColumn(
+                        "Data", format="DD/MM/YYYY"
+                    ),
                     "Total": st.column_config.NumberColumn(
                         help="Valor total de pontos por ativo futuro, por ano",
                         min_value=0,
@@ -551,7 +562,6 @@ if df is not None:
                     ),
                     "Média": st.column_config.NumberColumn(
                         help="Média de pontos por ativo futuro, por ano",
-                        min_value=0,
                         step=0.01,
                     ),
                 },
@@ -560,8 +570,11 @@ if df is not None:
             chart_data_type = get_futures_by_period(df_futures).reset_index()
             chart = (
                 alt.Chart(chart_data_type)
-                .mark_bar(color="red")
-                .encode(y="Total", x=alt.X("Ano:N"), color="Ticker")
+                .mark_bar()
+                .encode(
+                    y=alt.Y("Total", aggregate="sum"),
+                    x=alt.X("Data:O", timeUnit="utcyearmonth"),
+                )
                 .interactive()
             )
             st.altair_chart(
@@ -577,12 +590,10 @@ if df is not None:
                 column_config={
                     "Total": st.column_config.NumberColumn(
                         help="Valor total de pontos",
-                        min_value=0,
                         step=0.01,
                     ),
                     "Média": st.column_config.NumberColumn(
                         help="Média de pontos",
-                        min_value=0,
                         step=0.01,
                     ),
                 },
