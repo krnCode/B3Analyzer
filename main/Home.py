@@ -458,6 +458,86 @@ if df is not None:
                 theme="streamlit",
             )
 
+    # BDR DATA
+    # Expander to show BDR data
+    with st.expander("Visualizar BDRs", expanded=True):
+
+        st.subheader("BDR - Brazilian Depositary Receipts")
+
+        tab1, tab2 = st.tabs(
+            [
+                "BDR por Período",
+                "BDR por Ticker",
+            ]
+        )
+
+        df_bdr = create_df_bdr(df=df_filtered)
+
+        with tab1:
+            st.dataframe(
+                data=get_bdr_by_period(df_bdr),
+                use_container_width=True,
+                column_config={
+                    "Data": st.column_config.DatetimeColumn(
+                        "Data", format="DD/MM/YYYY"
+                    ),
+                    "Total": st.column_config.NumberColumn(
+                        help="Valor total de compras/vendas de BDR por ano",
+                        min_value=0,
+                        step=0.01,
+                    ),
+                    "Média": st.column_config.NumberColumn(
+                        help="Média de compras/vendas de BDR por ano",
+                        step=0.01,
+                    ),
+                },
+            )
+
+            chart_data_type = get_bdr_by_period(df_bdr).reset_index()
+            chart = (
+                alt.Chart(chart_data_type)
+                .mark_bar()
+                .encode(
+                    y="Total",
+                    x="Ano:N",
+                )
+                .interactive()
+            )
+            st.altair_chart(
+                altair_chart=chart,
+                use_container_width=True,
+                theme="streamlit",
+            )
+
+        with tab2:
+            st.dataframe(
+                data=get_bdr_by_ticker(df_bdr),
+                use_container_width=True,
+                column_config={
+                    "Total": st.column_config.NumberColumn(
+                        help="Valor total de compra/venda de BDR por ticker",
+                        step=0.01,
+                    ),
+                    "Média": st.column_config.NumberColumn(
+                        help="Média de compras/vendas de BDR por ticker",
+                        step=0.01,
+                    ),
+                },
+            )
+
+            chart_data_type = get_bdr_by_ticker(df_bdr).reset_index()
+            chart = (
+                alt.Chart(chart_data_type)
+                .mark_bar()
+                .encode(y="Total", x="Ticker", color="Ticker")
+                .interactive()
+            )
+            st.altair_chart(
+                altair_chart=chart,
+                use_container_width=True,
+                theme="streamlit",
+            )
+
     # INCOME DATA
     # Expander to show income data
     with st.expander("Visualizar Rendimentos", expanded=True):
@@ -637,86 +717,6 @@ if df is not None:
                 alt.Chart(chart_data_type)
                 .mark_bar()
                 .encode(y="Total", x="Ticker", color="Ticker")
-                .interactive()
-            )
-            st.altair_chart(
-                altair_chart=chart,
-                use_container_width=True,
-                theme="streamlit",
-            )
-
-    # BDR DATA
-    # Expander to show BDR data
-    with st.expander("Visualizar BDRs", expanded=True):
-
-        st.subheader("BDR - Brazilian Depositary Receipts")
-
-        tab1, tab2 = st.tabs(
-            [
-                "BDR por Período",
-                "BDR por Ticker",
-            ]
-        )
-
-        df_bdr = create_df_bdr(df=df_filtered)
-
-        with tab1:
-            st.dataframe(
-                data=get_bdr_by_period(df_bdr),
-                use_container_width=True,
-                column_config={
-                    "Data": st.column_config.DatetimeColumn(
-                        "Data", format="DD/MM/YYYY"
-                    ),
-                    "Total": st.column_config.NumberColumn(
-                        help="Valor total de compras/vendas de BDR por ano",
-                        min_value=0,
-                        step=0.01,
-                    ),
-                    "Média": st.column_config.NumberColumn(
-                        help="Média de compras/vendas de BDR por ano",
-                        step=0.01,
-                    ),
-                },
-            )
-
-            chart_data_type = get_bdr_by_period(df_bdr).reset_index()
-            chart = (
-                alt.Chart(chart_data_type)
-                .mark_bar()
-                .encode(
-                    y="Total",
-                    x="Ano:N",
-                )
-                .interactive()
-            )
-            st.altair_chart(
-                altair_chart=chart,
-                use_container_width=True,
-                theme="streamlit",
-            )
-
-        with tab2:
-            st.dataframe(
-                data=get_bdr_by_ticker(df_bdr),
-                use_container_width=True,
-                column_config={
-                    "Total": st.column_config.NumberColumn(
-                        help="Valor total de compra/venda de BDR por ticker",
-                        step=0.01,
-                    ),
-                    "Média": st.column_config.NumberColumn(
-                        help="Média de compras/vendas de BDR por ticker",
-                        step=0.01,
-                    ),
-                },
-            )
-
-            chart_data_type = get_bdr_by_ticker(df_bdr).reset_index()
-            chart = (
-                alt.Chart(chart_data_type)
-                .mark_bar()
-                .encode(y="Total", x="Ticker", color="Total")
                 .interactive()
             )
             st.altair_chart(
