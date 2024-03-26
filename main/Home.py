@@ -109,6 +109,33 @@ def clean_df(df: pd.DataFrame) -> pd.DataFrame:
 # Create BDR statements dfs
 def create_df_bdr(df: pd.DataFrame):
     df_bdr = df[df["Ticker"].str.contains("35|34|33|32|31")].copy()
+
+    return df_bdr
+
+
+def get_bdr_by_period(df_bdr: pd.DataFrame) -> pd.DataFrame:
+    df_bdr["Mes"] = df_bdr["Data"].dt.month
+    df_bdr["Ano"] = df_bdr["Data"].dt.year
+    df_bdr = df_bdr.groupby(["Ano", "Mes"])["Valor da Operação"].sum()
+    df_bdr = (
+        df_bdr.unstack(level=1).sort_values(by="Ano", ascending=False).fillna(value=0)
+    )
+    df_bdr["Total"] = df_bdr.sum(axis=1)
+    df_bdr["Média"] = df_bdr.filter(regex="[^Total]").mean(axis=1)
+
+    return df_bdr
+
+
+def get_bdr_by_ticker(df_bdr: pd.DataFrame) -> pd.DataFrame:
+    df_bdr["Mes"] = df_bdr["Data"].dt.month
+    df_bdr["Ano"] = df_bdr["Data"].dt.year
+    df_bdr = df_bdr.groupby(["Ticker", "Ano"])["Valor da Operação"].sum()
+    df_bdr = (
+        df_bdr.unstack(level=1).sort_values(by="Ticker", ascending=True).fillna(value=0)
+    )
+    df_bdr["Total"] = df_bdr.sum(axis=1)
+    df_bdr["Média"] = df_bdr.filter(regex="[^Total]").mean(axis=1)
+
     return df_bdr
 
 
@@ -635,31 +662,31 @@ if df is not None:
 
         with tab1:
             st.dataframe(
-                data=df_bdr,
+                data=get_bdr_by_period(df_bdr),
                 use_container_width=True,
                 column_config={
                     "Data": st.column_config.DatetimeColumn(
                         "Data", format="DD/MM/YYYY"
                     ),
                     "Total": st.column_config.NumberColumn(
-                        help="Valor total de pontos por ativo futuro, por ano",
+                        help="Valor total de compras/vendas de BDR por ano",
                         min_value=0,
                         step=0.01,
                     ),
                     "Média": st.column_config.NumberColumn(
-                        help="Média de pontos por ativo futuro, por ano",
+                        help="Média de compras/vendas de BDR por ano",
                         step=0.01,
                     ),
                 },
             )
 
-            chart_data_type = get_futures_by_period(df_futures).reset_index()
+            chart_data_type = get_bdr_by_period(df_bdr).reset_index()
             chart = (
                 alt.Chart(chart_data_type)
                 .mark_bar()
                 .encode(
-                    y=alt.Y("Total", aggregate="sum"),
-                    x=alt.X("Data:O", timeUnit="utcyearmonth"),
+                    y="Total",
+                    x="Ano:N",
                 )
                 .interactive()
             )
@@ -671,25 +698,25 @@ if df is not None:
 
         with tab2:
             st.dataframe(
-                data=get_futures_by_ticker(df_futures),
+                data=get_bdr_by_ticker(df_bdr),
                 use_container_width=True,
                 column_config={
                     "Total": st.column_config.NumberColumn(
-                        help="Valor total de pontos",
+                        help="Valor total de compra/venda de BDR por ticker",
                         step=0.01,
                     ),
                     "Média": st.column_config.NumberColumn(
-                        help="Média de pontos",
+                        help="Média de compras/vendas de BDR por ticker",
                         step=0.01,
                     ),
                 },
             )
 
-            chart_data_type = get_futures_by_ticker(df_futures).reset_index()
+            chart_data_type = get_bdr_by_ticker(df_bdr).reset_index()
             chart = (
                 alt.Chart(chart_data_type)
                 .mark_bar()
-                .encode(y="Total", x="Ticker", color="Ticker")
+                .encode(y="Total", x="Ticker", color="Total")
                 .interactive()
             )
             st.altair_chart(
