@@ -539,7 +539,7 @@ if df is not None:
             )
 
     # INCOME DATA
-    # Expander to show income data
+    # Expander to show Income data
     with st.expander("Visualizar Rendimentos", expanded=True):
 
         st.subheader("Rendimentos")
@@ -646,7 +646,7 @@ if df is not None:
             )
 
     # FUTURES DATA
-    # Expander to show futures data
+    # Expander to show Futures data
     with st.expander("Visualizar Futuros", expanded=True):
 
         st.subheader("Futuros")
