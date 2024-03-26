@@ -106,6 +106,12 @@ def clean_df(df: pd.DataFrame) -> pd.DataFrame:
 # Create stocks statements dfs
 
 
+# Create BDR statements dfs
+def create_df_bdr(df: pd.DataFrame):
+    df_bdr = df[df["Ticker"].str.contains("35|34|33|32|31")].copy()
+    return df_bdr
+
+
 # Creae futures statements dfs
 def create_df_futures(df: pd.DataFrame) -> pd.DataFrame:
     df_futures = df[df["Descrição Ticker"].str.contains("WDO|WIN")].copy()
@@ -550,6 +556,86 @@ if df is not None:
         with tab1:
             st.dataframe(
                 data=get_futures_by_period(df_futures),
+                use_container_width=True,
+                column_config={
+                    "Data": st.column_config.DatetimeColumn(
+                        "Data", format="DD/MM/YYYY"
+                    ),
+                    "Total": st.column_config.NumberColumn(
+                        help="Valor total de pontos por ativo futuro, por ano",
+                        min_value=0,
+                        step=0.01,
+                    ),
+                    "Média": st.column_config.NumberColumn(
+                        help="Média de pontos por ativo futuro, por ano",
+                        step=0.01,
+                    ),
+                },
+            )
+
+            chart_data_type = get_futures_by_period(df_futures).reset_index()
+            chart = (
+                alt.Chart(chart_data_type)
+                .mark_bar()
+                .encode(
+                    y=alt.Y("Total", aggregate="sum"),
+                    x=alt.X("Data:O", timeUnit="utcyearmonth"),
+                )
+                .interactive()
+            )
+            st.altair_chart(
+                altair_chart=chart,
+                use_container_width=True,
+                theme="streamlit",
+            )
+
+        with tab2:
+            st.dataframe(
+                data=get_futures_by_ticker(df_futures),
+                use_container_width=True,
+                column_config={
+                    "Total": st.column_config.NumberColumn(
+                        help="Valor total de pontos",
+                        step=0.01,
+                    ),
+                    "Média": st.column_config.NumberColumn(
+                        help="Média de pontos",
+                        step=0.01,
+                    ),
+                },
+            )
+
+            chart_data_type = get_futures_by_ticker(df_futures).reset_index()
+            chart = (
+                alt.Chart(chart_data_type)
+                .mark_bar()
+                .encode(y="Total", x="Ticker", color="Ticker")
+                .interactive()
+            )
+            st.altair_chart(
+                altair_chart=chart,
+                use_container_width=True,
+                theme="streamlit",
+            )
+
+    # BDR DATA
+    # Expander to show BDR data
+    with st.expander("Visualizar BDRs", expanded=True):
+
+        st.subheader("BDR - Brazilian Depositary Receipts")
+
+        tab1, tab2 = st.tabs(
+            [
+                "BDR por Período",
+                "BDR por Ticker",
+            ]
+        )
+
+        df_bdr = create_df_bdr(df=df_filtered)
+
+        with tab1:
+            st.dataframe(
+                data=df_bdr,
                 use_container_width=True,
                 column_config={
                     "Data": st.column_config.DatetimeColumn(
