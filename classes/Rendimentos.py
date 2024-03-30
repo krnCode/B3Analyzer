@@ -187,8 +187,9 @@ class Rendimentos:
 
 # TESTES DA CLASSE
 # -----------------------------
-st.set_page_config(page_title="Classe Rendimentos", layout="wide")
 if __name__ == "__main__":
+    st.set_page_config(page_title="Classe Rendimentos", layout="wide")
+
     extratos = st.file_uploader(label="Teste Rendimentos", accept_multiple_files=True)
 
     transformar_em_zero = lambda x: 0 if x == "-" else x
@@ -235,5 +236,5 @@ if __name__ == "__main__":
         st.dataframe(data=rend_tipo_mensal)
 
         rend_tipo_anual = rendimentos.rendimentos_por_tipo_anual(df=rend)
-        st.write("RENDIMENTOS POR TIPO anual")
+        st.write("RENDIMENTOS POR TIPO ANUAL")
         st.dataframe(data=rend_tipo_anual)
