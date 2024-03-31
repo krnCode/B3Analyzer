@@ -2,6 +2,8 @@ import pandas as pd
 import streamlit as st
 import altair as alt
 import numpy as np
+import locale
+
 import os
 import sys
 from io import BytesIO
@@ -24,6 +26,9 @@ pd.get_option("display.precision")
 # -------------------------------------------------------------
 st.set_page_config(page_title="B3 Analyzer", layout="wide")
 
+# CONFIG DE LOCALIZAÇÃO
+# -------------------------------------------------------------
+locale.setlocale(locale.LC_ALL, "pt_BR")
 
 # CAMINHO PARA O LOGO
 # -------------------------------------------------------------
