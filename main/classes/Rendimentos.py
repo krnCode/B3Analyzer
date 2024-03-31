@@ -1,6 +1,8 @@
 import pandas as pd
 import streamlit as st
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from utils.data_cleaning import *
+from utils.const import *
 
 # PANDAS CONFIG
 # -----------------------------
@@ -23,37 +25,6 @@ class Rendimentos:
 
     df: pd.DataFrame
 
-    # TIPOS DE RENDIMENTO
-    # -----------------------------
-    TIPOS_DE_RENDIMENTO: list = field(
-        default_factory=lambda: [
-            "Amortização",
-            "Dividendo",
-            "Juros",
-            "Juros Sobre Capital Próprio",
-            "Rendimento",
-        ]
-    )
-
-    # ORDEM DOS MESES
-    # -----------------------------
-    MESES: list = field(
-        default_factory=lambda: [
-            "Janeiro",
-            "Fevereiro",
-            "Março",
-            "Abril",
-            "Maio",
-            "Junho",
-            "Julho",
-            "Agosto",
-            "Setembro",
-            "Outubro",
-            "Novembro",
-            "Dezembro",
-        ]
-    )
-
     def pegar_somente_rendimentos(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         Processa os dados do extrato e retorna somente as movimentações de rendimento informadas em TIPOS_DE_RENDIMENTO (list).
@@ -74,8 +45,8 @@ class Rendimentos:
         df = df.assign(
             Mes=df["Data"].dt.month_name(locale="Portuguese"), Ano=df["Data"].dt.year
         )
-        df["Mes"] = pd.Categorical(df["Mes"], categories=self.MESES, ordered=True)
-        df = df[df["Movimentação"].isin(self.TIPOS_DE_RENDIMENTO)]
+        df["Mes"] = pd.Categorical(df["Mes"], categories=MESES, ordered=True)
+        df = df[df["Movimentação"].isin(TIPOS_DE_RENDIMENTO)]
         df = df[
             [
                 "Entrada/Saída",
@@ -191,22 +162,6 @@ if __name__ == "__main__":
     st.set_page_config(page_title="Classe Rendimentos", layout="wide")
 
     extratos = st.file_uploader(label="Teste Rendimentos", accept_multiple_files=True)
-
-    transformar_em_zero = lambda x: 0 if x == "-" else x
-
-    def ler_arquivos(extratos) -> pd.DataFrame:
-        dfs = []
-        for extrato in extratos:
-            df = pd.read_excel(
-                io=extrato,
-                converters={
-                    "Preço unitário": transformar_em_zero,
-                    "Valor da Operação": transformar_em_zero,
-                },
-            )
-            dfs.append(df)
-        df = pd.concat(dfs, ignore_index=True)
-        return df
 
     if extratos:
 
