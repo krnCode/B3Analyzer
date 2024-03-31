@@ -3,11 +3,11 @@ import streamlit as st
 import altair as alt
 import numpy as np
 import os
+import sys
 from io import BytesIO
 from pathlib import Path
 from PIL import Image
 
-import sys
 
 sys.path.insert(0, "./")
 
