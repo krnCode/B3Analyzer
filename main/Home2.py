@@ -6,7 +6,12 @@ import os
 from io import BytesIO
 from pathlib import Path
 from PIL import Image
-from libs.data_cleaning import ler_arquivos
+
+import sys
+
+sys.path.insert(0, "./")
+
+from libs.data_cleaning import *
 
 
 # PANDAS CONFIG
