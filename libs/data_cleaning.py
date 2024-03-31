@@ -1,6 +1,6 @@
 # Ler extratos e transformar em um dataframe único
 import pandas as pd
-from utils.const import *
+from const import *
 
 
 def ler_arquivos(extratos) -> pd.DataFrame:

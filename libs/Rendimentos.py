@@ -1,8 +1,7 @@
 import pandas as pd
 import streamlit as st
 from dataclasses import dataclass
-from utils.data_cleaning import *
-from utils.const import *
+from data_cleaning import *
 
 # PANDAS CONFIG
 # -----------------------------
