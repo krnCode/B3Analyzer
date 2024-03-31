@@ -3,7 +3,8 @@ import streamlit as st
 import altair as alt
 import numpy as np
 import os
-from utils.data_cleaning import *
+
+# from classes.utils.data_cleaning import ler_arquivos
 from io import BytesIO
 from pathlib import Path
 from PIL import Image
