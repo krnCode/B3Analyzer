@@ -2,15 +2,13 @@ import pandas as pd
 import streamlit as st
 import altair as alt
 import numpy as np
-
-# import locale
 import os
 import sys
 from io import BytesIO
 from pathlib import Path
 from PIL import Image
 
-
+# Inclusão do caminho do root do app para que o python consiga encontrar os packages em /libs
 sys.path.insert(0, "./")
 
 from libs.data_cleaning import *
@@ -26,9 +24,6 @@ pd.get_option("display.precision")
 # -------------------------------------------------------------
 st.set_page_config(page_title="B3 Analyzer", layout="wide")
 
-# CONFIG DE LOCALIZAÇÃO
-# -------------------------------------------------------------
-# locale.setlocale(locale.LC_ALL, "pt_BR")
 
 # CAMINHO PARA O LOGO
 # -------------------------------------------------------------
