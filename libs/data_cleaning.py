@@ -63,7 +63,7 @@ def tratar_dados(df: pd.DataFrame) -> pd.DataFrame:
     df.loc[mask, "Ticker"] = df.loc[mask, "Descrição Ticker"].str[:6]
 
     df = df.assign(
-        Semana=df["Data"].dt.weekday,
+        Semana=df["Data"].dt.isocalendar().week,
         Mes=df["Data"].dt.month_name(locale="pt_BR"),
         Ano=df["Data"].dt.year,
     )
@@ -73,7 +73,6 @@ def tratar_dados(df: pd.DataFrame) -> pd.DataFrame:
             "Entrada/Saída",
             "Ano",
             "Mes",
-            "Semana",
             "Data",
             "Ticker",
             "Descrição Ticker",
