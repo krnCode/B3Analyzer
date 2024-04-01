@@ -58,7 +58,7 @@ if extratos:
     with st.sidebar:
         st.markdown("Filtros:")
 
-        statement = st.multiselect(
+        movimentação = st.multiselect(
             label="Movimentação",
             options=df["Movimentação"].sort_values(ascending=True).unique(),
             default=None,
@@ -70,7 +70,7 @@ if extratos:
             default=None,
             placeholder="",
         )
-        broker = st.multiselect(
+        corretora = st.multiselect(
             label="Corretora",
             options=df["Instituição"].sort_values(ascending=True).unique(),
             default=None,
@@ -85,14 +85,14 @@ if extratos:
 
     # Lógica dos filtros
     query = []
-    if statement:
-        query.append(f"Movimentação == {statement}")
+    if movimentação:
+        query.append(f"Movimentação == {movimentação}")
 
     if ticker:
         query.append(f"Ticker == {ticker}")
 
-    if broker:
-        query.append(f"Instituição == {broker}")
+    if corretora:
+        query.append(f"Instituição == {corretora}")
 
     if query:
         df_filtered = df.query(" and ".join(query))
@@ -101,6 +101,8 @@ if extratos:
         df_filtered = df
 
     st.dataframe(data=df_filtered)
+
+    metricas, extratos, analise_por_ativo = st.tabs()
 
 else:
     # Mostrar mensagem de erro se o logo não for encontrado
