@@ -102,7 +102,9 @@ if extratos:
 
     st.dataframe(data=df_filtered)
 
-    metricas, extratos, analise_por_ativo = st.tabs()
+    metricas, extratos, analise_por_ativo = st.tabs(
+        ["Métricas", "Extratos", "Análise por Ativo"]
+    )
 
 else:
     # Mostrar mensagem de erro se o logo não for encontrado
