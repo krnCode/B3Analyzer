@@ -49,6 +49,15 @@ def tratar_dados(df: pd.DataFrame) -> pd.DataFrame:
     df["Descrição Ticker"] = df["Descrição Ticker"].replace(
         to_replace={"- ": ""}, regex=True
     )
+
+    # Criar mask do df original para separar apenas onde a descrição do ticket contém
+    # as iniciais de ativos futuros para nomear o ticker
+    mask = df["Descrição Ticker"].str.contains("WDO|WIN")
+    df.loc[mask, "Descrição Ticker"] = (
+        df.loc[mask, "Descrição Ticker"] + " - " + df.loc[mask, "Ticker"]
+    )
+    df.loc[mask, "Ticker"] = df.loc[mask, "Descrição Ticker"].str[:6]
+
     df = df.assign(Mes=df["Data"].dt.month_name(locale="pt_BR"), Ano=df["Data"].dt.year)
     df["Mes"] = pd.Categorical(df["Mes"], categories=MESES, ordered=True)
     df = df[
