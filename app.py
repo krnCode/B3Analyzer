@@ -6,8 +6,8 @@ from io import BytesIO
 from pathlib import Path
 from PIL import Image
 
-# Inclusão do caminho do root do app para que o python consiga encontrar os packages em /libs
-sys.path.insert(0, "./")
+# # Inclusão do caminho do root do app para que o python consiga encontrar os packages em /libs
+# sys.path.insert(0, "./")
 
 from libs.data_cleaning import *
 
@@ -25,7 +25,7 @@ st.set_page_config(page_title="B3 Analyzer", layout="wide")
 
 # CAMINHO PARA O LOGO
 # -------------------------------------------------------------
-caminho_app = Path(__file__).parent.parent
+caminho_app = Path(__file__).parent
 caminho_pasta_imagens = caminho_app / "res" / "logo"
 listar_arquivos = os.listdir(caminho_pasta_imagens)
 selecionar_imagem = listar_arquivos[0] if listar_arquivos else None
