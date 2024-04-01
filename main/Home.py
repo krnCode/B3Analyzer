@@ -1,7 +1,5 @@
 import pandas as pd
 import streamlit as st
-import altair as alt
-import numpy as np
 import os
 import sys
 from io import BytesIO
@@ -83,6 +81,7 @@ if extratos:
             "[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B3V8QAU)"
         )
 
+    # TODO: incluir mais opções de filtro (período, mes, ano)
     # Lógica dos filtros
     query = []
     if movimentação:
@@ -100,11 +99,24 @@ if extratos:
     else:
         df_filtered = df
 
-    st.dataframe(data=df_filtered)
+    st.markdown("# Análise dos Investimentos")
 
     metricas, extratos, analise_por_ativo = st.tabs(
         ["Métricas", "Extratos", "Análise por Ativo"]
     )
+
+    # TODO: incluir métricas
+    with metricas:
+        pass
+
+    # TODO: incluir extratos
+    with extratos:
+        st.dataframe(data=df_filtered)
+
+    # TODO: incluir análises
+    with analise_por_ativo:
+        pass
+
 
 else:
     # Mostrar mensagem de erro se o logo não for encontrado
