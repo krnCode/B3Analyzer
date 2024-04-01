@@ -73,6 +73,7 @@ def tratar_dados(df: pd.DataFrame) -> pd.DataFrame:
             "Entrada/Saída",
             "Ano",
             "Mes",
+            "Semana",
             "Data",
             "Ticker",
             "Descrição Ticker",
