@@ -1,5 +1,5 @@
 import pandas as pd
-from .const import *
+from const import *
 
 
 # Ler extratos e transformar em um dataframe único
