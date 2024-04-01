@@ -76,5 +76,4 @@ def tratar_dados(df: pd.DataFrame) -> pd.DataFrame:
         ]
     ]
 
-    print(df["Mes"].unique())
     return df
