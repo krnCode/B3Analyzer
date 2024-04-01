@@ -142,6 +142,10 @@ if __name__ == "__main__":
         st.write("EXTRATO PADRÃO")
         st.dataframe(data=df)
 
+        df = tratar_dados(df=df)
+        st.write("DADOS TRATADOS")
+        st.dataframe(data=df)
+
         rendimentos = Rendimentos(df)
         rend = rendimentos.pegar_somente_rendimentos(df=df)
         st.write("SOMENTE RENDIMENTOS")

@@ -49,9 +49,7 @@ def tratar_dados(df: pd.DataFrame) -> pd.DataFrame:
     df["Descrição Ticker"] = df["Descrição Ticker"].replace(
         to_replace={"- ": ""}, regex=True
     )
-    df = df.assign(
-        Mes=df["Data"].dt.month_name(locale="pt_BR.utf-8"), Ano=df["Data"].dt.year
-    )
+    df = df.assign(Mes=df["Data"].dt.month_name(locale="pt_BR"), Ano=df["Data"].dt.year)
     df["Mes"] = pd.Categorical(df["Mes"], categories=MESES, ordered=True)
     df = df[
         [
@@ -69,4 +67,5 @@ def tratar_dados(df: pd.DataFrame) -> pd.DataFrame:
         ]
     ]
 
+    print(df["Mes"].unique())
     return df
