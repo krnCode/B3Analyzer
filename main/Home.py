@@ -101,9 +101,7 @@ if extratos:
 
     st.markdown("# Análise dos Investimentos")
 
-    metricas, extratos, analise_por_ativo = st.tabs(
-        ["Métricas", "Extratos", "Análise por Ativo"]
-    )
+    metricas, extratos, analises = st.tabs(["Métricas", "Extratos", "Análises"])
 
     # TODO: incluir métricas
     with metricas:
@@ -114,7 +112,7 @@ if extratos:
         st.dataframe(data=df_filtered)
 
     # TODO: incluir análises
-    with analise_por_ativo:
+    with analises:
         pass
 
 
