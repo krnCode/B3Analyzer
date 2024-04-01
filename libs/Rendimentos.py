@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 from dataclasses import dataclass
-from .data_cleaning import *
+from data_cleaning import *
 
 # PANDAS CONFIG
 # -----------------------------
@@ -34,33 +34,7 @@ class Rendimentos:
         Retorna:
             df (pd.DataFrame): Pandas dataframe com os dados tratados e somente com as movimentações de rendimento informadas em TIPOS_DE_RENDIMENTO (list).
         """
-        df["Data"] = pd.to_datetime(df["Data"], format="%d/%m/%Y")
-        df[["Ticker", "Descrição Ticker"]] = df["Produto"].str.split(
-            pat=" ", n=1, expand=True
-        )
-        df["Descrição Ticker"] = df["Descrição Ticker"].replace(
-            to_replace={"- ": ""}, regex=True
-        )
-        df = df.assign(
-            Mes=df["Data"].dt.month_name(locale="Portuguese"), Ano=df["Data"].dt.year
-        )
-        df["Mes"] = pd.Categorical(df["Mes"], categories=MESES, ordered=True)
         df = df[df["Movimentação"].isin(TIPOS_DE_RENDIMENTO)]
-        df = df[
-            [
-                "Entrada/Saída",
-                "Ano",
-                "Mes",
-                "Data",
-                "Ticker",
-                "Descrição Ticker",
-                "Movimentação",
-                "Instituição",
-                "Quantidade",
-                "Preço unitário",
-                "Valor da Operação",
-            ]
-        ]
 
         return df
 
