@@ -62,13 +62,18 @@ def tratar_dados(df: pd.DataFrame) -> pd.DataFrame:
     )
     df.loc[mask, "Ticker"] = df.loc[mask, "Descrição Ticker"].str[:6]
 
-    df = df.assign(Mes=df["Data"].dt.month_name(locale="pt_BR"), Ano=df["Data"].dt.year)
+    df = df.assign(
+        Semana=df["Data"].dt.weekday,
+        Mes=df["Data"].dt.month_name(locale="pt_BR"),
+        Ano=df["Data"].dt.year,
+    )
     df["Mes"] = pd.Categorical(df["Mes"], categories=MESES, ordered=True)
     df = df[
         [
             "Entrada/Saída",
             "Ano",
             "Mes",
+            "Semana",
             "Data",
             "Ticker",
             "Descrição Ticker",
