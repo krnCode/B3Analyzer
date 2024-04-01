@@ -1,5 +1,9 @@
 import pandas as pd
-from const import *
+import sys
+
+sys.path.insert(0, "./")
+
+from .const import *
 
 
 # Ler extratos e transformar em um dataframe único
