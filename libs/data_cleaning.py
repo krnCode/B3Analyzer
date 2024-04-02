@@ -1,4 +1,5 @@
 import pandas as pd
+from io import BytesIO
 
 # CONSTANTES
 # -----------------------------
@@ -110,3 +111,88 @@ def tratar_dados(df: pd.DataFrame) -> pd.DataFrame:
     ]
 
     return df
+
+
+# Separar as movimentações de entrada  e saída de investimentos
+# Considerar movimentação de "Amortização" como saída, uma vez que ela sai da carteira de investimentos apesar de ser classificada como "Credito"
+def separar_entradas(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Filtra somente as movimentação de entrada de investimentos.
+    Movimentação de "Amortização" é considerada como saída pois diminui o valor dos investimentos.
+
+    Argumentos:
+        df (pd.DataFrame): Pandas dataframe já tratado.
+
+    Retorna:
+        df (pd.DataFrame): Pandas dataframe somente com as informações de entrada de investimentos.
+    """
+    df = df[
+        (df["Entrada/Saída"].values == "Credito")
+        & (df["Movimentação"] != "Amortização")
+    ]
+
+    return df
+
+
+def separar_saidas(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Filtra somente as movimentação de saída de investimentos.
+    Movimentação de "Amortização" é considerada como saída pois diminui o valor dos investimentos.
+
+    Argumentos:
+        df (pd.DataFrame): Pandas dataframe já tratado.
+
+    Retorna:
+        df (pd.DataFrame): Pandas dataframe somente com as informações de entrada de investimentos.
+    """
+    df = df[
+        (df["Entrada/Saída"].values == "Debito") | (df["Movimentação"] == "Amortização")
+    ]
+
+    return df
+
+
+# Converter dataframes para excel
+def converter_para_excel(df: pd.DataFrame) -> BytesIO:
+    """
+    Converte o dataframe para excel.
+    Esta função converte para apenas uma planiha.
+
+    Argumentos:
+        df (pd.DataFrame): Pandas dataframe já tratado.
+
+    Retorna:
+        BytesIO: Objeto em bytes que pode ser posteriormente salvo em formato excel (.xlsx)
+    """
+    output = BytesIO()
+
+    with pd.ExcelWriter(output, engine="openpyxl") as writer:
+        df.to_excel(writer, index=False)
+
+    output.seek(0)
+
+    return output
+
+
+def converter_para_excel_varias_planilhas(dfs: list) -> BytesIO:
+    """
+    Converte o dataframe para excel.
+    Esta função converte vários dataframes para planilhas diferentes dentro do mesmo arquivo excel (.xlsx).
+
+    Argumentos:
+        dfs (list): Lista com todos os pandas dataframe já tratados.
+        nome_planilhas (list): Lista com os nomes das planilhas que devem ser utilizados.
+
+    Retorna:
+        BytesIO: Objeto em bytes que pode ser posteriormente salvo em formato excel (.xlsx)
+    """
+    output = BytesIO()
+    nome_planilhas = ["b3_entradas", "b3_saidas"]
+
+    with pd.ExcelWriter(output, engine="openpyxl") as writer:
+        for df, nome_planilha in zip(dfs, nome_planilhas):
+            df.to_excel(writer, sheet_name=nome_planilha, index=False)
+
+    output.seek(0)
+
+    return output
