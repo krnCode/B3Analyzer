@@ -97,7 +97,6 @@ if extratos:
             "[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B3V8QAU)"
         )
 
-    # TODO: incluir mais opções de filtro (período, mes, ano)
     # Lógica dos filtros
     query = []
     if ano:
@@ -164,7 +163,11 @@ if extratos:
 
     # TODO: incluir análises
     with ativos:
-        pass
+        selecao_ativo = st.radio(
+            label="Selecione qual classe de ativo deseja ver:",
+            options=["Ações", "FII", "BDR", "Futuros", "Rendimentos"],
+            horizontal=True,
+        )
 
 
 else:
