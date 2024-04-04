@@ -155,7 +155,9 @@ if extratos:
 
         st.download_button(
             label="Exportar Excel",
-            data=converter_para_excel_varias_planilhas(dfs=[entradas, saidas]),
+            data=converter_para_excel_varias_planilhas(
+                dfs=[entradas, saidas], nome_planilhas=["Entradas", "Saídas"]
+            ),
             file_name="b3_extrato_entradas_saidas.xlsx",
             key="b3_extrato_entradas_saidas",
         )
@@ -172,6 +174,32 @@ if extratos:
         if selecao_ativo == "Rendimentos":
             rendimentos = Rendimentos(df_filtered)
             rend = rendimentos.pegar_somente_rendimentos(df=df_filtered)
+
+            st.download_button(
+                label="Exportar Todas as Tabelas para Excel",
+                data=converter_para_excel_varias_planilhas(
+                    dfs=[
+                        rend,
+                        rendimentos.rendimentos_por_periodo(df=rend).reset_index(),
+                        rendimentos.rendimentos_por_ticker_mensal(
+                            df=rend
+                        ).reset_index(),
+                        rendimentos.rendimentos_por_ticker_anual(df=rend).reset_index(),
+                        rendimentos.rendimentos_por_tipo_mensal(df=rend).reset_index(),
+                        rendimentos.rendimentos_por_tipo_anual(df=rend).reset_index(),
+                    ],
+                    nome_planilhas=[
+                        "Rend. Extrato Consolidado",
+                        "Rend. Por Período",
+                        "Rend. Ticker Mensal",
+                        "Rend. Tiker Anual",
+                        "Rend. Tipo Mensal",
+                        "Rend. Tipo Anual",
+                    ],
+                ),
+                file_name="b3_rendimentos.xlsx",
+                key="b3_rendimentos",
+            )
 
             st.markdown("#### Extrato Rendimentos")
             st.dataframe(data=rend, use_container_width=True)
