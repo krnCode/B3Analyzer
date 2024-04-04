@@ -6,7 +6,7 @@ from io import BytesIO
 from pathlib import Path
 from PIL import Image
 from libs.data_cleaning import *
-
+from libs.Rendimentos import Rendimentos
 
 # PANDAS CONFIG
 # -------------------------------------------------------------
@@ -130,7 +130,7 @@ if extratos:
 
     with extratos:
         st.markdown("#### Extrato Consolidado")
-        st.dataframe(data=df_filtered)
+        st.dataframe(data=df_filtered, use_container_width=True)
         st.download_button(
             label="Exportar Excel",
             data=converter_para_excel(df_filtered),
@@ -169,6 +169,48 @@ if extratos:
             horizontal=True,
         )
 
+        if selecao_ativo == "Rendimentos":
+            rendimentos = Rendimentos(df_filtered)
+            rend = rendimentos.pegar_somente_rendimentos(df=df_filtered)
+
+            st.markdown("#### Extrato Rendimentos")
+            st.dataframe(data=rend, use_container_width=True)
+            st.markdown("---")
+
+            st.markdown("#### Rendimentos por Período")
+            st.dataframe(
+                data=rendimentos.rendimentos_por_periodo(df=rend),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+            st.markdown("#### Rendimentos por Ticker - Mensal")
+            st.dataframe(
+                data=rendimentos.rendimentos_por_ticker_mensal(df=rend),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+            st.markdown("#### Rendimentos por Ticker - Anual")
+            st.dataframe(
+                data=rendimentos.rendimentos_por_ticker_anual(df=rend),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+            st.markdown("#### Rendimentos por Tipo - Mensal")
+            st.dataframe(
+                data=rendimentos.rendimentos_por_tipo_mensal(df=rend),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+            st.markdown("#### Rendimentos por Tipo - Anual")
+            st.dataframe(
+                data=rendimentos.rendimentos_por_tipo_anual(df=rend),
+                use_container_width=True,
+            )
+            st.markdown("---")
 
 else:
     # Mostrar mensagem de erro se o logo não for encontrado
