@@ -174,7 +174,7 @@ def converter_para_excel(df: pd.DataFrame) -> BytesIO:
     return output
 
 
-def converter_para_excel_varias_planilhas(dfs: list) -> BytesIO:
+def converter_para_excel_varias_planilhas(dfs: list, nome_planilhas: list) -> BytesIO:
     """
     Converte o dataframe para excel.
     Esta função converte vários dataframes para planilhas diferentes dentro do mesmo arquivo excel (.xlsx).
@@ -187,7 +187,6 @@ def converter_para_excel_varias_planilhas(dfs: list) -> BytesIO:
         BytesIO: Objeto em bytes que pode ser posteriormente salvo em formato excel (.xlsx)
     """
     output = BytesIO()
-    nome_planilhas = ["b3_entradas", "b3_saidas"]
 
     with pd.ExcelWriter(output, engine="openpyxl") as writer:
         for df, nome_planilha in zip(dfs, nome_planilhas):
