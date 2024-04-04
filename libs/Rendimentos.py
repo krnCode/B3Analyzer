@@ -18,8 +18,6 @@ class Rendimentos:
 
     Atributos:
         df (pd.dataframe): Pandas dataframe com as movimentações de extrato para serem tratadas;
-        TIPOS_DE_RENDIMENTO (list): Os tipos de movimentações do extratos que serão considerados como rendimento para tratamento;
-        MESES (list): Lista de meses em ordem cronolófica para ser usado na transformação categória de datas, e assim trazer os meses em na ordem correta.
     """
 
     df: pd.DataFrame
