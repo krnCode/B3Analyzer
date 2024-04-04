@@ -30,7 +30,7 @@ caminho_arquivo_imagem = caminho_pasta_imagens / selecionar_imagem
 
 # APP PRINCIPAL
 # -------------------------------------------------------------
-# Sidebar - upload dos extratos
+# MARK: Sidebar - upload dos extratos
 with st.sidebar:
     extratos = st.file_uploader(
         label="Envie os extratos da B3 em excel (extensão .xlsx)",
@@ -40,7 +40,7 @@ with st.sidebar:
     st.markdown("---")
 
 
-# Mostra as informações no Streamlit quando feito o upload dos extratos, senão mostra tela inicial informando apra fazer o upload.
+# Mostra as informações no Streamlit quando feito o upload dos extratos, senão mostra tela inicial informando para fazer o upload.
 if extratos:
     # Ler e concatenar extratos em um dataframe único
     df = ler_arquivos(extratos=extratos)
@@ -48,7 +48,7 @@ if extratos:
     # Tratar o dataframe gerado para análise
     df = tratar_dados(df=df)
 
-    # Filtros
+    # MARK: Filtros
     with st.sidebar:
         st.markdown("Filtros:")
 
@@ -97,7 +97,7 @@ if extratos:
             "[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B3V8QAU)"
         )
 
-    # Lógica dos filtros
+    # MARK: Lógica dos filtros
     query = []
     if ano:
         query.append(f"Ano == {ano}")
@@ -124,10 +124,12 @@ if extratos:
 
     metricas, extratos, ativos = st.tabs(["Métricas", "Extratos", "Ativos"])
 
+    # MARK: Métricas
     # TODO: incluir métricas
     with metricas:
         pass
 
+    # MARK: Extratos
     with extratos:
         st.markdown("#### Extrato Consolidado")
         st.dataframe(data=df_filtered, use_container_width=True)
@@ -163,6 +165,7 @@ if extratos:
         )
         st.markdown("---")
 
+    # MARK: Ativos
     # TODO: incluir análises
     with ativos:
         selecao_ativo = st.radio(
@@ -240,6 +243,8 @@ if extratos:
             )
             st.markdown("---")
 
+
+# MARK: TELA INICIAL
 else:
     # Mostrar mensagem de erro se o logo não for encontrado
     if not selecionar_imagem:
