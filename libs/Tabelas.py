@@ -1,10 +1,11 @@
 import pandas as pd
 import streamlit as st
 from dataclasses import dataclass
-from data_cleaning import *
-from libs.Rendimentos import Rendimentos
-from libs.Fii import Fii
-from libs.Tabelas import Tabelas
+
+# from libs.data_cleaning import *
+
+# from libs.Rendimentos import Rendimentos
+# from libs.Fii import Fii
 
 
 @dataclass
@@ -115,72 +116,72 @@ class Tabelas:
 
 # TESTES DA CLASSE
 # -----------------------------
-if __name__ == "__main__":
-    st.set_page_config(page_title="Classe Tabelas", layout="wide")
+# if __name__ == "__main__":
+#     st.set_page_config(page_title="Classe Tabelas", layout="wide")
 
-    extratos = st.file_uploader(label="Teste Tabelas", accept_multiple_files=True)
+#     extratos = st.file_uploader(label="Teste Tabelas", accept_multiple_files=True)
 
-    if extratos:
+#     if extratos:
 
-        df = ler_arquivos(extratos=extratos)
-        st.write("EXTRATO PADRÃO")
-        st.dataframe(data=df)
+#         df = ler_arquivos(extratos=extratos)
+#         st.write("EXTRATO PADRÃO")
+#         st.dataframe(data=df)
 
-        df = tratar_dados(df=df)
-        st.write("DADOS TRATADOS")
-        st.dataframe(data=df)
+#         df = tratar_dados(df=df)
+#         st.write("DADOS TRATADOS")
+#         st.dataframe(data=df)
 
-        col1, col2 = st.columns(spec=[2])
-        tabelas = Tabelas(df=df)
+#         col1, col2 = st.columns(spec=[1, 1])
+#         tabelas = Tabelas(df=df)
 
-        with col1:
-            rendimentos = Rendimentos(df)
-            rend = rendimentos.pegar_somente_rendimentos(df=df)
-            st.write("SOMENTE RENDIMENTOS")
-            st.dataframe(data=rend)
+#         with col1:
+#             rendimentos = Rendimentos(df)
+#             rend = rendimentos.pegar_somente_rendimentos(df=df)
+#             st.write("SOMENTE RENDIMENTOS")
+#             st.dataframe(data=rend)
 
-            rend_periodo = tabelas.por_periodo(df=rend)
-            st.write("RENDIMENTOS POR PERÍODO")
-            st.dataframe(data=rend_periodo)
+#             rend_periodo = tabelas.por_periodo(df=rend)
+#             st.write("RENDIMENTOS POR PERÍODO")
+#             st.dataframe(data=rend_periodo)
 
-            rend_ticker_mensal = tabelas.ticker_mensal(df=fii)
-            st.write("RENDIMENTOS POR TICKER MENSAL")
-            st.dataframe(data=rend_ticker_mensal)
+#             rend_ticker_mensal = tabelas.ticker_mensal(df=rend)
+#             st.write("RENDIMENTOS POR TICKER MENSAL")
+#             st.dataframe(data=rend_ticker_mensal)
 
-            rend_ticker_anual = tabelas.ticker_anual(df=fii)
-            st.write("RENDIMENTOS POR TICKER ANUAL")
-            st.dataframe(data=rend_ticker_anual)
+#             rend_ticker_anual = tabelas.ticker_anual(df=rend)
+#             st.write("RENDIMENTOS POR TICKER ANUAL")
+#             st.dataframe(data=rend_ticker_anual)
 
-            rend_tipo_mensal = tabelas.tipo_mensal(df=fii)
-            st.write("RENDIMENTOS POR TIPO MENSAL")
-            st.dataframe(data=rend_tipo_mensal)
+#             rend_tipo_mensal = tabelas.tipo_mensal(df=rend)
+#             st.write("RENDIMENTOS POR TIPO MENSAL")
+#             st.dataframe(data=rend_tipo_mensal)
 
-            rend_tipo_anual = tabelas.tipo_anual(df=fii)
-            st.write("RENDIMENTOS POR TIPO ANUAL")
-            st.dataframe(data=rend_tipo_anual)
+#             rend_tipo_anual = tabelas.tipo_anual(df=rend)
+#             st.write("RENDIMENTOS POR TIPO ANUAL")
+#             st.dataframe(data=rend_tipo_anual)
 
-        with col2:
-            fundos = Fii()
-            fii = fundos.pegar_somente_fii(df=df)
-            st.write("SOMENTE RENDIMENTOS")
-            st.dataframe(data=fii)
+#         with col2:
+#             fundos = Fii()
+#             fii = fundos.pegar_somente_fii(df=df)
+#             st.write("SOMENTE FII")
+#             st.dataframe(data=fii)
 
-            fi_periodo = tabelas.por_periodo(df=fii)
-            st.write("RENDIMENTOS POR PERÍODO")
-            st.dataframe(data=fi_periodo)
+#             fii_periodo = tabelas.por_periodo(df=fii)
+#             st.write("FII POR PERÍODO")
+#             st.dataframe(data=fii_periodo)
 
-            fii_ticker_mensal = tabelas.ticker_mensal(df=fii)
-            st.write("RENDIMENTOS POR TICKER MENSAL")
-            st.dataframe(data=fii_ticker_mensal)
+#             fii_ticker_mensal = tabelas.ticker_mensal(df=fii)
+#             st.write("FII POR TICKER MENSAL")
+#             st.dataframe(data=fii_ticker_mensal)
 
-            fii_ticker_anual = tabelas.ticker_anual(df=fii)
-            st.write("RENDIMENTOS POR TICKER ANUAL")
-            st.dataframe(data=fii_ticker_anual)
+#             fii_ticker_anual = tabelas.ticker_anual(df=fii)
+#             st.write("FII POR TICKER ANUAL")
+#             st.dataframe(data=fii_ticker_anual)
 
-            fii_tipo_mensal = tabelas.tipo_mensal(df=fii)
-            st.write("RENDIMENTOS POR TIPO MENSAL")
-            st.dataframe(data=fii_tipo_mensal)
+#             fii_tipo_mensal = tabelas.tipo_mensal(df=fii)
+#             st.write("FII POR TIPO MENSAL")
+#             st.dataframe(data=fii_tipo_mensal)
 
-            fii_tipo_anual = tabelas.tipo_anual(df=fii)
-            st.write("RENDIMENTOS POR TIPO ANUAL")
-            st.dataframe(data=fii_tipo_anual)
+#             fii_tipo_anual = tabelas.tipo_anual(df=fii)
+#             st.write("FII POR TIPO ANUAL")
+#             st.dataframe(data=fii_tipo_anual)

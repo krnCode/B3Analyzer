@@ -2,16 +2,6 @@ import pandas as pd
 from io import BytesIO
 
 # CONSTANTES
-# -----------------------------
-# Descrição das movimentações a serem consideradas como rendimento
-TIPOS_DE_RENDIMENTO: list = [
-    "Amortização",
-    "Dividendo",
-    "Juros",
-    "Juros Sobre Capital Próprio",
-    "Rendimento",
-]
-
 # Meses em ordem cronológica
 MESES: list = [
     "Janeiro",
