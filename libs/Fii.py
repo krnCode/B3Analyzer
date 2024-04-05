@@ -15,12 +15,7 @@ pd.set_option("future.no_silent_downcasting", True)
 class Fii:
     """
     Classe que trata os dados relativos aos FIIs - Fundos de Investimento imobiliário.
-
-    Atributos:
-        df (pd.dataframe): Pandas dataframe com as movimentações de extrato para serem tratadas;
     """
-
-    # df: pd.DataFrame
 
     def pegar_somente_fii(self, df: pd.DataFrame) -> pd.DataFrame:
         """

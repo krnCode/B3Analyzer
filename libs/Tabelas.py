@@ -16,12 +16,7 @@ class Tabelas:
     Os dados são primeiramente separados pelo tipo de ativo, e depois informados no tipo de tabela a ser apresentado.
     As tabelas são basicamente agrupamento de ativos por período, mes, ano, ticker, ou qualquer outro tipod de
     agrupoamento de dados que traga informação relevante para o usuário.
-
-    Atributos:
-        df (pd.dataframe): Pandas dataframe com as movimentações de extrato para serem apresentadas em tabelas;
     """
-
-    df: pd.DataFrame
 
     def por_periodo(self, df: pd.DataFrame) -> pd.DataFrame:
         """

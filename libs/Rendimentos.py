@@ -26,12 +26,7 @@ class Rendimentos:
 
     São considerados rendimentos:
     Amortização, Dividendo, Juros, Juros Sobre Capital Próprio e Rendimento.
-
-    Atributos:
-        df (pd.dataframe): Pandas dataframe com as movimentações de extrato para serem tratadas;
     """
-
-    df: pd.DataFrame
 
     def pegar_somente_rendimentos(self, df: pd.DataFrame) -> pd.DataFrame:
         """
