@@ -7,6 +7,9 @@ from pathlib import Path
 from PIL import Image
 from libs.data_cleaning import *
 from libs.Rendimentos import Rendimentos
+from libs.Fii import Fii
+from libs.Tabelas import Tabelas
+
 
 # PANDAS CONFIG
 # -------------------------------------------------------------
@@ -123,6 +126,7 @@ if extratos:
     st.markdown("# Análise dos Investimentos")
 
     metricas, extratos, ativos = st.tabs(["Métricas", "Extratos", "Ativos"])
+    tabelas = Tabelas()
 
     # MARK: Métricas
     # TODO: incluir métricas
@@ -173,9 +177,9 @@ if extratos:
             options=["Ações", "FII", "BDR", "Futuros", "Rendimentos"],
             horizontal=True,
         )
-
+        # MARK: Rendimentos
         if selecao_ativo == "Rendimentos":
-            rendimentos = Rendimentos(df_filtered)
+            rendimentos = Rendimentos()
             rend = rendimentos.pegar_somente_rendimentos(df=df_filtered)
 
             st.download_button(
@@ -183,13 +187,11 @@ if extratos:
                 data=converter_para_excel_varias_planilhas(
                     dfs=[
                         rend,
-                        rendimentos.rendimentos_por_periodo(df=rend).reset_index(),
-                        rendimentos.rendimentos_por_ticker_mensal(
-                            df=rend
-                        ).reset_index(),
-                        rendimentos.rendimentos_por_ticker_anual(df=rend).reset_index(),
-                        rendimentos.rendimentos_por_tipo_mensal(df=rend).reset_index(),
-                        rendimentos.rendimentos_por_tipo_anual(df=rend).reset_index(),
+                        tabelas.por_periodo(df=rend).reset_index(),
+                        tabelas.ticker_mensal(df=rend).reset_index(),
+                        tabelas.ticker_anual(df=rend).reset_index(),
+                        tabelas.tipo_mensal(df=rend).reset_index(),
+                        tabelas.tipo_anual(df=rend).reset_index(),
                     ],
                     nome_planilhas=[
                         "Rend. Extrato Consolidado",
@@ -210,39 +212,105 @@ if extratos:
 
             st.markdown("#### Rendimentos por Período")
             st.dataframe(
-                data=rendimentos.rendimentos_por_periodo(df=rend),
+                data=tabelas.por_periodo(df=rend),
                 use_container_width=True,
             )
             st.markdown("---")
 
             st.markdown("#### Rendimentos por Ticker - Mensal")
             st.dataframe(
-                data=rendimentos.rendimentos_por_ticker_mensal(df=rend),
+                data=tabelas.ticker_mensal(df=rend),
                 use_container_width=True,
             )
             st.markdown("---")
 
             st.markdown("#### Rendimentos por Ticker - Anual")
             st.dataframe(
-                data=rendimentos.rendimentos_por_ticker_anual(df=rend),
+                data=tabelas.ticker_anual(df=rend),
                 use_container_width=True,
             )
             st.markdown("---")
 
             st.markdown("#### Rendimentos por Tipo - Mensal")
             st.dataframe(
-                data=rendimentos.rendimentos_por_tipo_mensal(df=rend),
+                data=tabelas.tipo_mensal(df=rend),
                 use_container_width=True,
             )
             st.markdown("---")
 
             st.markdown("#### Rendimentos por Tipo - Anual")
             st.dataframe(
-                data=rendimentos.rendimentos_por_tipo_anual(df=rend),
+                data=tabelas.tipo_anual(df=rend),
+                use_container_width=True,
+            )
+            st.markdown("---")
+        # MARK: FII
+        if selecao_ativo == "FII":
+            fundos = Fii()
+            fii = fundos.pegar_somente_fii(df=df_filtered)
+
+            st.download_button(
+                label="Exportar Todas as Tabelas para Excel",
+                data=converter_para_excel_varias_planilhas(
+                    dfs=[
+                        fii,
+                        tabelas.por_periodo(df=fii).reset_index(),
+                        tabelas.ticker_mensal(df=fii).reset_index(),
+                        tabelas.ticker_anual(df=fii).reset_index(),
+                        tabelas.tipo_mensal(df=fii).reset_index(),
+                        tabelas.tipo_anual(df=fii).reset_index(),
+                    ],
+                    nome_planilhas=[
+                        "FII Extrato Consolidado",
+                        "FII Por Período",
+                        "FII Ticker Mensal",
+                        "FII Tiker Anual",
+                        "FII Tipo Mensal",
+                        "FII Tipo Anual",
+                    ],
+                ),
+                file_name="b3_fii.xlsx",
+                key="b3_fii",
+            )
+
+            st.markdown("#### Extrato FII")
+            st.dataframe(data=fii, use_container_width=True)
+            st.markdown("---")
+
+            st.markdown("#### FII por Período")
+            st.dataframe(
+                data=tabelas.por_periodo(df=fii),
                 use_container_width=True,
             )
             st.markdown("---")
 
+            st.markdown("#### FII por Ticker - Mensal")
+            st.dataframe(
+                data=tabelas.ticker_mensal(df=fii),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+            st.markdown("#### FII por Ticker - Anual")
+            st.dataframe(
+                data=tabelas.ticker_anual(df=fii),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+            st.markdown("#### FII por Tipo - Mensal")
+            st.dataframe(
+                data=tabelas.tipo_mensal(df=fii),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+            st.markdown("#### FII por Tipo - Anual")
+            st.dataframe(
+                data=tabelas.tipo_anual(df=fii),
+                use_container_width=True,
+            )
+            st.markdown("---")
 
 # MARK: TELA INICIAL
 else:
