@@ -137,7 +137,9 @@ def separar_saidas(df: pd.DataFrame) -> pd.DataFrame:
         df (pd.DataFrame): Pandas dataframe somente com as informações de entrada de investimentos.
     """
     df = df[
-        (df["Entrada/Saída"].values == "Debito") | (df["Movimentação"] == "Amortização")
+        (df["Entrada/Saída"].values == "Debito")
+        | (df["Movimentação"] == "Amortização")
+        | (df["Movimentação"] == "Resgate")
     ]
 
     return df
@@ -220,7 +222,6 @@ def calcular_preco_medio(df: pd.DataFrame) -> pd.DataFrame:
         saldo_quantidades.append(saldo_quantidade)
     df["Saldo Valor"] = saldo_valores
     df["Saldo Quantidade"] = saldo_quantidades
-
     df["Preço Médio"] = df.apply(
         lambda row: (
             abs(row["Saldo Valor"] / row["Saldo Quantidade"])
