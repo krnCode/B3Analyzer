@@ -1,11 +1,7 @@
 import pandas as pd
 import streamlit as st
 from dataclasses import dataclass
-
-# from libs.data_cleaning import *
-
-# from libs.Rendimentos import Rendimentos
-# from libs.Fii import Fii
+from libs.data_cleaning import *
 
 
 @dataclass
