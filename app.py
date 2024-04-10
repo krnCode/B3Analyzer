@@ -9,6 +9,7 @@ from libs.data_cleaning import *
 from libs.Rendimentos import Rendimentos
 from libs.Fii import Fii
 from libs.Tabelas import Tabelas
+from libs.Futuros import Futuros
 
 
 # PANDAS CONFIG
@@ -244,6 +245,7 @@ if extratos:
                 use_container_width=True,
             )
             st.markdown("---")
+
         # MARK: FII
         if selecao_ativo == "FII":
             fundos = Fii()
@@ -312,7 +314,77 @@ if extratos:
             )
             st.markdown("---")
 
-# MARK: TELA INICIAL
+        # MARK: Futuros
+        # TODO: Calcular pontos (coluna quantidade) e valor ganho (coluna valor da operação)
+        if selecao_ativo == "Futuros":
+            futuros = Futuros()
+            fut = futuros.pegar_somente_futuros(df_filtered)
+            futgroup = futuros.agrupar_daytrades(fut)
+
+            st.download_button(
+                label="Exportar Todas as Tabelas para Excel",
+                data=converter_para_excel_varias_planilhas(
+                    dfs=[
+                        futgroup,
+                        tabelas.por_periodo(df=fut).reset_index(),
+                        tabelas.ticker_mensal(df=fut).reset_index(),
+                        tabelas.ticker_anual(df=fut).reset_index(),
+                        tabelas.tipo_mensal(df=fut).reset_index(),
+                        tabelas.tipo_anual(df=fut).reset_index(),
+                    ],
+                    nome_planilhas=[
+                        "Futuros Extrato Consolidado",
+                        "Futuros Por Período",
+                        "Futuros Ticker Mensal",
+                        "Futuros Tiker Anual",
+                        "Futuros Tipo Mensal",
+                        "Futuros Tipo Anual",
+                    ],
+                ),
+                file_name="b3_futuros.xlsx",
+                key="b3_futuros",
+            )
+
+            st.markdown("#### Extrato Futuros")
+            st.dataframe(data=fut, use_container_width=True)
+            st.markdown("---")
+
+            st.markdown("#### Futuros por Período")
+            st.dataframe(
+                data=tabelas.por_periodo(df=fut),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+            st.markdown("#### Futuros por Ticker - Mensal")
+            st.dataframe(
+                data=tabelas.ticker_mensal(df=fut),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+            st.markdown("#### Futuros por Ticker - Anual")
+            st.dataframe(
+                data=tabelas.ticker_anual(df=fut),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+            st.markdown("#### Futuros por Tipo - Mensal")
+            st.dataframe(
+                data=tabelas.tipo_mensal(df=fut),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+            st.markdown("#### Futuros por Tipo - Anual")
+            st.dataframe(
+                data=tabelas.tipo_anual(df=fut),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+# MARK: Tela Inicial
 else:
     # Mostrar mensagem de erro se o logo não for encontrado
     if not selecionar_imagem:
