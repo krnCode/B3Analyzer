@@ -10,6 +10,7 @@ from libs.Rendimentos import Rendimentos
 from libs.Fii import Fii
 from libs.Tabelas import Tabelas
 from libs.Futuros import Futuros
+from libs.Bdr import Bdr
 
 
 # PANDAS CONFIG
@@ -310,6 +311,74 @@ if extratos:
             st.markdown("#### FII por Tipo - Anual")
             st.dataframe(
                 data=tabelas.tipo_anual(df=fii),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+        # MARK: BDR
+        if selecao_ativo == "BDR":
+            bdr = Bdr()
+            bdr_mov = bdr.pegar_somente_bdr(df_filtered)
+
+            st.download_button(
+                label="Exportar Todas as Tabelas para Excel",
+                data=converter_para_excel_varias_planilhas(
+                    dfs=[
+                        bdr_mov,
+                        tabelas.por_periodo(df=bdr_mov).reset_index(),
+                        tabelas.ticker_mensal(df=bdr_mov).reset_index(),
+                        tabelas.ticker_anual(df=bdr_mov).reset_index(),
+                        tabelas.tipo_mensal(df=bdr_mov).reset_index(),
+                        tabelas.tipo_anual(df=bdr_mov).reset_index(),
+                    ],
+                    nome_planilhas=[
+                        "BDR Extrato Consolidado",
+                        "BDR Por Período",
+                        "BDR Ticker Mensal",
+                        "BDR Tiker Anual",
+                        "BDR Tipo Mensal",
+                        "BDR Tipo Anual",
+                    ],
+                ),
+                file_name="b3_bdr.xlsx",
+                key="b3_bdr",
+            )
+
+            st.markdown("#### Extrato BDRs")
+            st.dataframe(data=bdr_mov, use_container_width=True)
+            st.markdown("---")
+
+            st.markdown("#### BDR por Período")
+            st.dataframe(
+                data=tabelas.por_periodo(df=bdr_mov),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+            st.markdown("#### BDR por Ticker - Mensal")
+            st.dataframe(
+                data=tabelas.ticker_mensal(df=bdr_mov),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+            st.markdown("#### BDR por Ticker - Anual")
+            st.dataframe(
+                data=tabelas.ticker_anual(df=bdr_mov),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+            st.markdown("#### BDR por Tipo - Mensal")
+            st.dataframe(
+                data=tabelas.tipo_mensal(df=bdr_mov),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+            st.markdown("#### BDR por Tipo - Anual")
+            st.dataframe(
+                data=tabelas.tipo_anual(df=bdr_mov),
                 use_container_width=True,
             )
             st.markdown("---")
