@@ -42,7 +42,9 @@ class Tabelas:
         Retorna:
             df (pd.DataFrame): Pandas dataframe com as movimentações agrupadas por ticker, mes e ano.
         """
-        df = df.groupby(["Ticker", "Ano", "Mes"])["Valor da Operação"].sum()
+        df = df.groupby(["Ticker", "Ano", "Mes"], observed=True)[
+            "Valor da Operação"
+        ].sum()
         df = df.unstack().sort_values(by="Ticker", ascending=True).fillna(value=0)
         df = df.assign(
             Total=df.sum(axis=1), Média=df.filter(regex="[^Total]").mean(axis=1)
@@ -60,7 +62,7 @@ class Tabelas:
         Retorna:
             df (pd.DataFrame): Pandas dataframe com as movimentações por ticker e ano.
         """
-        df = df.groupby(["Ticker", "Ano"])["Valor da Operação"].sum()
+        df = df.groupby(["Ticker", "Ano"], observed=True)["Valor da Operação"].sum()
         df = df.unstack().sort_values(by="Ticker", ascending=True).fillna(value=0)
         df = df.assign(
             Total=df.sum(axis=1), Média=df.filter(regex="[^Total]").mean(axis=1)
@@ -78,7 +80,9 @@ class Tabelas:
         Retorna:
             df (pd.DataFrame): Pandas dataframe com as movimentações de rendimento por tipo, mes e ano.
         """
-        df = df.groupby(["Movimentação", "Ano", "Mes"])["Valor da Operação"].sum()
+        df = df.groupby(["Movimentação", "Ano", "Mes"], observed=True)[
+            "Valor da Operação"
+        ].sum()
         df = df.unstack().sort_values(by="Movimentação", ascending=True).fillna(value=0)
         df = df.assign(
             Total=df.sum(axis=1), Média=df.filter(regex="[^Total]").mean(axis=1)
@@ -96,7 +100,9 @@ class Tabelas:
         Retorna:
             df (pd.DataFrame): Pandas dataframe com as movimentações agrupadas por tipo e ano.
         """
-        df = df.groupby(["Movimentação", "Ano"])["Valor da Operação"].sum()
+        df = df.groupby(["Movimentação", "Ano"], observed=True)[
+            "Valor da Operação"
+        ].sum()
         df = df.unstack().sort_values(by="Movimentação", ascending=True).fillna(value=0)
         df = df.assign(
             Total=df.sum(axis=1), Média=df.filter(regex="[^Total]").mean(axis=1)
