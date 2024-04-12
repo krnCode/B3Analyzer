@@ -179,73 +179,6 @@ if extratos:
             options=["Ações", "FII", "BDR", "Futuros", "Rendimentos"],
             horizontal=True,
         )
-        # MARK: Rendimentos
-        if selecao_ativo == "Rendimentos":
-            rendimentos = Rendimentos()
-            rend = rendimentos.pegar_somente_rendimentos(df=df_filtered)
-
-            st.download_button(
-                label="Exportar Todas as Tabelas para Excel",
-                data=converter_para_excel_varias_planilhas(
-                    dfs=[
-                        rend,
-                        tabelas.por_periodo(df=rend).reset_index(),
-                        tabelas.ticker_mensal(df=rend).reset_index(),
-                        tabelas.ticker_anual(df=rend).reset_index(),
-                        tabelas.tipo_mensal(df=rend).reset_index(),
-                        tabelas.tipo_anual(df=rend).reset_index(),
-                    ],
-                    nome_planilhas=[
-                        "Rend. Extrato Consolidado",
-                        "Rend. Por Período",
-                        "Rend. Ticker Mensal",
-                        "Rend. Tiker Anual",
-                        "Rend. Tipo Mensal",
-                        "Rend. Tipo Anual",
-                    ],
-                ),
-                file_name="b3_rendimentos.xlsx",
-                key="b3_rendimentos",
-            )
-
-            st.markdown("#### Extrato Rendimentos")
-            st.dataframe(data=rend, use_container_width=True)
-            st.markdown("---")
-
-            st.markdown("#### Rendimentos por Período")
-            st.dataframe(
-                data=tabelas.por_periodo(df=rend),
-                use_container_width=True,
-            )
-            st.markdown("---")
-
-            st.markdown("#### Rendimentos por Ticker - Mensal")
-            st.dataframe(
-                data=tabelas.ticker_mensal(df=rend),
-                use_container_width=True,
-            )
-            st.markdown("---")
-
-            st.markdown("#### Rendimentos por Ticker - Anual")
-            st.dataframe(
-                data=tabelas.ticker_anual(df=rend),
-                use_container_width=True,
-            )
-            st.markdown("---")
-
-            st.markdown("#### Rendimentos por Tipo - Mensal")
-            st.dataframe(
-                data=tabelas.tipo_mensal(df=rend),
-                use_container_width=True,
-            )
-            st.markdown("---")
-
-            st.markdown("#### Rendimentos por Tipo - Anual")
-            st.dataframe(
-                data=tabelas.tipo_anual(df=rend),
-                use_container_width=True,
-            )
-            st.markdown("---")
 
         # MARK: FII
         if selecao_ativo == "FII":
@@ -452,6 +385,75 @@ if extratos:
                 use_container_width=True,
             )
             st.markdown("---")
+
+        # MARK: Rendimentos
+        if selecao_ativo == "Rendimentos":
+            rendimentos = Rendimentos()
+            rend = rendimentos.pegar_somente_rendimentos(df=df_filtered)
+
+            st.download_button(
+                label="Exportar Todas as Tabelas para Excel",
+                data=converter_para_excel_varias_planilhas(
+                    dfs=[
+                        rend,
+                        tabelas.por_periodo(df=rend).reset_index(),
+                        tabelas.ticker_mensal(df=rend).reset_index(),
+                        tabelas.ticker_anual(df=rend).reset_index(),
+                        tabelas.tipo_mensal(df=rend).reset_index(),
+                        tabelas.tipo_anual(df=rend).reset_index(),
+                    ],
+                    nome_planilhas=[
+                        "Rend. Extrato Consolidado",
+                        "Rend. Por Período",
+                        "Rend. Ticker Mensal",
+                        "Rend. Tiker Anual",
+                        "Rend. Tipo Mensal",
+                        "Rend. Tipo Anual",
+                    ],
+                ),
+                file_name="b3_rendimentos.xlsx",
+                key="b3_rendimentos",
+            )
+
+            st.markdown("#### Extrato Rendimentos")
+            st.dataframe(data=rend, use_container_width=True)
+            st.markdown("---")
+
+            st.markdown("#### Rendimentos por Período")
+            st.dataframe(
+                data=tabelas.por_periodo(df=rend),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+            st.markdown("#### Rendimentos por Ticker - Mensal")
+            st.dataframe(
+                data=tabelas.ticker_mensal(df=rend),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+            st.markdown("#### Rendimentos por Ticker - Anual")
+            st.dataframe(
+                data=tabelas.ticker_anual(df=rend),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+            st.markdown("#### Rendimentos por Tipo - Mensal")
+            st.dataframe(
+                data=tabelas.tipo_mensal(df=rend),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+            st.markdown("#### Rendimentos por Tipo - Anual")
+            st.dataframe(
+                data=tabelas.tipo_anual(df=rend),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
 
 # MARK: Tela Inicial
 else:
