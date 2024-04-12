@@ -11,6 +11,7 @@ from libs.Fii import Fii
 from libs.Tabelas import Tabelas
 from libs.Futuros import Futuros
 from libs.Bdr import Bdr
+from libs.Acoes import Acoes
 
 
 # PANDAS CONFIG
@@ -179,6 +180,74 @@ if extratos:
             options=["Ações", "FII", "BDR", "Futuros", "Rendimentos"],
             horizontal=True,
         )
+
+        # MARK: Ações
+        if selecao_ativo == "Ações":
+            acoes = Acoes()
+            acoes_mov = acoes.pegar_somente_acoes(df=df_filtered)
+
+            st.download_button(
+                label="Exportar Todas as Tabelas para Excel",
+                data=converter_para_excel_varias_planilhas(
+                    dfs=[
+                        acoes_mov,
+                        tabelas.por_periodo(df=acoes_mov).reset_index(),
+                        tabelas.ticker_mensal(df=acoes_mov).reset_index(),
+                        tabelas.ticker_anual(df=acoes_mov).reset_index(),
+                        tabelas.tipo_mensal(df=acoes_mov).reset_index(),
+                        tabelas.tipo_anual(df=acoes_mov).reset_index(),
+                    ],
+                    nome_planilhas=[
+                        "Açoes Extrato Consolidado",
+                        "Açoes Por Período",
+                        "Açoes Ticker Mensal",
+                        "Açoes Tiker Anual",
+                        "Açoes Tipo Mensal",
+                        "Açoes Tipo Anual",
+                    ],
+                ),
+                file_name="b3_acoes.xlsx",
+                key="b3_acoes",
+            )
+
+            st.markdown("#### Extrato Açoes")
+            st.dataframe(data=acoes_mov, use_container_width=True)
+            st.markdown("---")
+
+            st.markdown("#### Açoes por Período")
+            st.dataframe(
+                data=tabelas.por_periodo(df=acoes_mov),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+            st.markdown("#### Açoes por Ticker - Mensal")
+            st.dataframe(
+                data=tabelas.ticker_mensal(df=acoes_mov),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+            st.markdown("#### Açoes por Ticker - Anual")
+            st.dataframe(
+                data=tabelas.ticker_anual(df=acoes_mov),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+            st.markdown("#### Açoes por Tipo - Mensal")
+            st.dataframe(
+                data=tabelas.tipo_mensal(df=acoes_mov),
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+            st.markdown("#### Açoes por Tipo - Anual")
+            st.dataframe(
+                data=tabelas.tipo_anual(df=acoes_mov),
+                use_container_width=True,
+            )
+            st.markdown("---")
 
         # MARK: FII
         if selecao_ativo == "FII":
