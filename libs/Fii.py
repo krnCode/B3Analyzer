@@ -1,5 +1,4 @@
 import pandas as pd
-import streamlit as st
 import numpy as np
 from dataclasses import dataclass
 
@@ -47,26 +46,3 @@ class Fii:
         df = df.sort_values(by="Data", ascending=True)
 
         return df
-
-
-# TESTES DA CLASSE
-# -----------------------------
-# if __name__ == "__main__":
-#     st.set_page_config(page_title="Classe FII", layout="wide")
-
-#     extratos = st.file_uploader(label="Teste Rendimentos", accept_multiple_files=True)
-
-#     if extratos:
-
-#         df = ler_arquivos(extratos=extratos)
-#         st.write("EXTRATO PADRÃO")
-#         st.dataframe(data=df)
-
-#         df = tratar_dados(df=df)
-#         st.write("DADOS TRATADOS")
-#         st.dataframe(data=df)
-
-#         fundos_imob = Fii(df)
-#         fii = fundos_imob.pegar_somente_fii(df=df)
-#         st.write("SOMENTE RENDIMENTOS")
-#         st.dataframe(data=fii)

@@ -1,5 +1,4 @@
 import pandas as pd
-import streamlit as st
 from dataclasses import dataclass
 
 # PANDAS CONFIG
@@ -131,46 +130,3 @@ class Rendimentos:
         )
 
         return df
-
-
-# TESTES DA CLASSE
-# -----------------------------
-# if __name__ == "__main__":
-#     st.set_page_config(page_title="Classe Rendimentos", layout="wide")
-
-#     extratos = st.file_uploader(label="Teste Rendimentos", accept_multiple_files=True)
-
-#     if extratos:
-
-#         df = ler_arquivos(extratos=extratos)
-#         st.write("EXTRATO PADRÃO")
-#         st.dataframe(data=df)
-
-#         df = tratar_dados(df=df)
-#         st.write("DADOS TRATADOS")
-#         st.dataframe(data=df)
-
-#         rendimentos = Rendimentos(df)
-#         rend = rendimentos.pegar_somente_rendimentos(df=df)
-#         st.write("SOMENTE RENDIMENTOS")
-#         st.dataframe(data=rend)
-
-#         rend_periodo = rendimentos.rendimentos_por_periodo(df=rend)
-#         st.write("RENDIMENTOS POR PERÍODO")
-#         st.dataframe(data=rend_periodo)
-
-#         rend_ticker_mensal = rendimentos.rendimentos_por_ticker_mensal(df=rend)
-#         st.write("RENDIMENTOS POR TICKER MENSAL")
-#         st.dataframe(data=rend_ticker_mensal)
-
-#         rend_ticker_anual = rendimentos.rendimentos_por_ticker_anual(df=rend)
-#         st.write("RENDIMENTOS POR TICKER ANUAL")
-#         st.dataframe(data=rend_ticker_anual)
-
-#         rend_tipo_mensal = rendimentos.rendimentos_por_tipo_mensal(df=rend)
-#         st.write("RENDIMENTOS POR TIPO MENSAL")
-#         st.dataframe(data=rend_tipo_mensal)
-
-#         rend_tipo_anual = rendimentos.rendimentos_por_tipo_anual(df=rend)
-#         st.write("RENDIMENTOS POR TIPO ANUAL")
-#         st.dataframe(data=rend_tipo_anual)
