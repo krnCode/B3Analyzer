@@ -14,15 +14,10 @@ class Futuros:
         df = df[df["Descrição Ticker"].str.contains("WDO|WIN")]
         df.loc[:, "Descrição Ticker"] = df["Descrição Ticker"] + " - " + df["Ticker"]
         df.loc[:, "Ticker"] = df["Descrição Ticker"].str[:6]
-        df["Preço unitário"] = np.where(
+        df.loc[:, "Preço unitário"] = np.where(
             df["Movimentação"] == "Compra",
             df["Preço unitário"] * -1,
             df["Preço unitário"],
         )
-
-        return df
-
-    def agrupar_daytrades(self, df: pd.DataFrame) -> pd.DataFrame:
-        df = df.groupby(by=["Data"])["Preço unitário"].sum()
 
         return df
