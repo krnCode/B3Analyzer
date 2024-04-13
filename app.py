@@ -211,7 +211,13 @@ if extratos:
             )
 
             st.markdown("#### Extrato Açoes")
-            st.dataframe(data=acoes_mov, use_container_width=True)
+            st.dataframe(
+                data=acoes_mov,
+                use_container_width=True,
+                column_config={
+                    "Data": st.column_config.DatetimeColumn("Data", format="DD/MM/YYYY")
+                },
+            )
             st.markdown("---")
 
             st.markdown("#### Açoes por Período")
@@ -279,7 +285,13 @@ if extratos:
             )
 
             st.markdown("#### Extrato FII")
-            st.dataframe(data=fii, use_container_width=True)
+            st.dataframe(
+                data=fii,
+                use_container_width=True,
+                column_config={
+                    "Data": st.column_config.DatetimeColumn("Data", format="DD/MM/YYYY")
+                },
+            )
             st.markdown("---")
 
             st.markdown("#### FII por Período")
@@ -347,7 +359,13 @@ if extratos:
             )
 
             st.markdown("#### Extrato BDRs")
-            st.dataframe(data=bdr_mov, use_container_width=True)
+            st.dataframe(
+                data=bdr_mov,
+                use_container_width=True,
+                column_config={
+                    "Data": st.column_config.DatetimeColumn("Data", format="DD/MM/YYYY")
+                },
+            )
             st.markdown("---")
 
             st.markdown("#### BDR por Período")
@@ -462,7 +480,13 @@ if extratos:
             )
 
             st.markdown("#### Extrato Rendimentos")
-            st.dataframe(data=rend, use_container_width=True)
+            st.dataframe(
+                data=rend,
+                use_container_width=True,
+                column_config={
+                    "Data": st.column_config.DatetimeColumn("Data", format="DD/MM/YYYY")
+                },
+            )
             st.markdown("---")
 
             st.markdown("#### Rendimentos por Período")
