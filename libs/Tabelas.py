@@ -108,3 +108,59 @@ class Tabelas:
         )
 
         return df
+
+    # MARK: Tabelas Futuros
+    # Com o objetivo de demonstrar os ganhos com daytrade em ativos futuros,
+    # a lógica da tabela deste tipo de ativo é um pouco diferente e por isso
+    # precisa de funções específicas para fazer o cálculo dos ganhos
+    # em valor
+    def futuros_por_dia(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Recebe os dados limpos e retona um dataframe com as movimentações agrupadas por dia.
+
+        Argumentos:
+            df (pd.DataFrame): Pandas dataframe com as movimentações já tratadas.
+
+        Retorna:
+            df (pd.DataFrame): Pandas dataframe com as movimentações agrupadas por dia.
+        """
+        df = df.groupby(["Data", "Ticker"])["Preço unitário"].sum()
+        df = df.unstack(level=1).sort_values(by="Data", ascending=True).fillna(value=0)
+        for ticker in df.columns:
+            if "WDO" in ticker:
+                df[f"{ticker}"] = df[ticker] * 10
+            elif "WIN" in ticker:
+                df[f"{ticker}"] = df[ticker] * 0.20
+        df["Total"] = df.sum(axis=1)
+        df["Média"] = df.filter(regex="[^Total]").mean(axis=1)
+
+        return df
+
+    def futuros_por_periodo(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Recebe os dados limpos e retona um dataframe com as movimentações agrupadopor ticker, mes e ano.
+
+        Argumentos:
+            df (pd.DataFrame): Pandas dataframe com as movimentações de rendimento já tratadas.
+
+        Retorna:
+            df (pd.DataFrame): Pandas dataframe com as movimentações agrupadas por ticker, mes e ano.
+        """
+        df = df.groupby(
+            ["Ticker", "Mes", "Ano"],
+            observed=True,
+        )["Preço unitário"].sum()
+        df = (
+            df.unstack(level=1).sort_values(by="Ticker", ascending=True).fillna(value=0)
+        )
+        for index in df.index:
+            ticker = index[0]
+            if "WDO" in ticker:
+                df.loc[index] *= 10
+            elif "WIN" in ticker:
+                df.loc[index] *= 0.20
+        df = df.assign(
+            Total=df.sum(axis=1), Média=df.filter(regex="[^Total]").mean(axis=1)
+        )
+
+        return df
