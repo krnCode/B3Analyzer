@@ -386,30 +386,22 @@ if extratos:
             st.markdown("---")
 
         # MARK: Futuros
-        # TODO: Calcular pontos (coluna quantidade) e valor ganho (coluna valor da operação)
         if selecao_ativo == "Futuros":
             futuros = Futuros()
             fut = futuros.pegar_somente_futuros(df_filtered)
-            futgroup = futuros.agrupar_daytrades(fut)
 
             st.download_button(
                 label="Exportar Todas as Tabelas para Excel",
                 data=converter_para_excel_varias_planilhas(
                     dfs=[
-                        futgroup,
-                        tabelas.por_periodo(df=fut).reset_index(),
-                        tabelas.ticker_mensal(df=fut).reset_index(),
-                        tabelas.ticker_anual(df=fut).reset_index(),
-                        tabelas.tipo_mensal(df=fut).reset_index(),
-                        tabelas.tipo_anual(df=fut).reset_index(),
+                        fut,
+                        tabelas.futuros_por_dia(df=fut).reset_index(),
+                        tabelas.futuros_por_periodo(df=fut).reset_index(),
                     ],
                     nome_planilhas=[
                         "Futuros Extrato Consolidado",
+                        "Futuros Por Dia",
                         "Futuros Por Período",
-                        "Futuros Ticker Mensal",
-                        "Futuros Tiker Anual",
-                        "Futuros Tipo Mensal",
-                        "Futuros Tipo Anual",
                     ],
                 ),
                 file_name="b3_futuros.xlsx",
@@ -417,40 +409,25 @@ if extratos:
             )
 
             st.markdown("#### Extrato Futuros")
-            st.dataframe(data=fut, use_container_width=True)
+            st.dataframe(
+                data=fut,
+                use_container_width=True,
+            )
+            st.markdown("---")
+
+            st.markdown("#### Futuros por Dia")
+            st.dataframe(
+                data=tabelas.futuros_por_dia(df=fut),
+                use_container_width=True,
+                column_config={
+                    "Data": st.column_config.DatetimeColumn("Data", format="DD/MM/YYYY")
+                },
+            )
             st.markdown("---")
 
             st.markdown("#### Futuros por Período")
             st.dataframe(
-                data=tabelas.por_periodo(df=fut),
-                use_container_width=True,
-            )
-            st.markdown("---")
-
-            st.markdown("#### Futuros por Ticker - Mensal")
-            st.dataframe(
-                data=tabelas.ticker_mensal(df=fut),
-                use_container_width=True,
-            )
-            st.markdown("---")
-
-            st.markdown("#### Futuros por Ticker - Anual")
-            st.dataframe(
-                data=tabelas.ticker_anual(df=fut),
-                use_container_width=True,
-            )
-            st.markdown("---")
-
-            st.markdown("#### Futuros por Tipo - Mensal")
-            st.dataframe(
-                data=tabelas.tipo_mensal(df=fut),
-                use_container_width=True,
-            )
-            st.markdown("---")
-
-            st.markdown("#### Futuros por Tipo - Anual")
-            st.dataframe(
-                data=tabelas.tipo_anual(df=fut),
+                data=tabelas.futuros_por_periodo(df=fut),
                 use_container_width=True,
             )
             st.markdown("---")
