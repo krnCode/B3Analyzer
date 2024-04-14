@@ -20,12 +20,6 @@ Para utilizar o aplitcativo, basta acessá-lo no link abaixo e enviar os extrato
 2. Envie os extratos das movimentações da B3 em excel na barra lateral esquerda.
 3. Selecione as análises que deseja visualizar nas abas Métricas, Extratos, Ativos, etc.
 
-## Principais dependencias
-- pandas
-- streamlit
-- numpy
-- openpyxl
-
 ## Me apoie!
 Este é um projeto pessoal e disponível gratuitamente para todos, mas caso tenha gostado deste projeto, você pode me apoiar em minha página Ko-Fi abaixo.
 
