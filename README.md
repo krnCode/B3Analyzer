@@ -2,31 +2,32 @@
 
 # B3 Analyzer
 
-## Description
-B3 Analyzer is a Python application that provides information about investments you made in the brazillian stock market B3. You just upload your investment statements and the app give data analysis for you. The application is built using the Streamlit library and uses Pandas for data manipulation.
+## Descrição
+B3 Analyzer é uma aplicação criada em Python e publicada na plataforma Streamlit Cloud e seu objetivo é providenciar informações sobre os investimentos feitos na bolsa de valores brasileira - B3.
+
+Para utilizar o aplitcativo, basta acessá-lo no link abaixo e enviar os extratos em excel das movimentações dos investimentos na B3.
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://b3analyzer.streamlit.app/)
 
-## Features
-- Upload B3 statements in Excel format.
-- Consolidate multiple statements into a single view.
-- Clean and preprocess data for analysis.
-- Visualize consolidated statement, inflow and outflow entries.
-- Export consolidated statements in Excel format.
+## Recursos
+- Envie os extratos em excel para ter análises sobre seus investimentos feitos na hora.
+- Extraia um extrato consolidado com todas as informações, ou separado pelo tipo de ativo já com análises.
+- Fácil de acessar e utilizar (web app).
+- Novas atualizações de análises e visualizações.
 
-## How to Use
-1. Acess the web app.
-2. Upload your B3 statements in Excel format using the file uploader in the sidebar.
-3. The application will automatically process the statements and present the analyses.
+## Como usar
+1. Acesse o link do aplicativo.
+2. Envie os extratos das movimentações da B3 em excel na barra lateral esquerda.
+3. Selecione as análises que deseja visualizar nas abas Métricas, Extratos, Ativos, etc.
 
-## Dependencies
+## Principais dependencias
 - pandas
 - streamlit
 - numpy
 - openpyxl
 
-## Consider Supporting
+## Me apoie!
+Este é um projeto pessoal e disponível gratuitamente para todos, mas caso tenha gostado deste projeto, você pode me apoiar em minha página Ko-Fi abaixo.
 
-If you liked this project, consider supporting me on my Ko-Fi page!
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B3V8QAU)
