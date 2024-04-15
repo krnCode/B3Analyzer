@@ -12,6 +12,7 @@ from libs.Tabelas import Tabelas
 from libs.Futuros import Futuros
 from libs.Bdr import Bdr
 from libs.Acoes import Acoes
+from libs.PrecoMedio import PrecoMedio
 
 
 # PANDAS CONFIG
@@ -128,7 +129,9 @@ if extratos:
 
     st.markdown("# Análise dos Investimentos")
 
-    metricas, extratos, ativos = st.tabs(["Métricas", "Extratos", "Ativos"])
+    metricas, extratos, ativos, preco_medio = st.tabs(
+        ["Métricas", "Extratos", "Ativos", "Preço Médio"]
+    )
     tabelas = Tabelas()
 
     # MARK: Métricas
@@ -173,7 +176,6 @@ if extratos:
         st.markdown("---")
 
     # MARK: Ativos
-    # TODO: incluir análises
     with ativos:
         selecao_ativo = st.radio(
             label="Selecione qual classe de ativo deseja ver:",
@@ -523,6 +525,12 @@ if extratos:
                 use_container_width=True,
             )
             st.markdown("---")
+
+        # MARK: Preço Médio
+        if selecao_ativo == "Preço Médio":
+            pm = PrecoMedio()
+            preco_medio = pm.calcular_preco_medio(df_filtered)
+            st.dataframe(data=preco_medio)
 
 
 # MARK: Tela Inicial
