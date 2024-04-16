@@ -129,9 +129,7 @@ if extratos:
 
     st.markdown("# Análise dos Investimentos")
 
-    metricas, extratos, ativos, preco_medio = st.tabs(
-        ["Métricas", "Extratos", "Ativos", "Preço Médio"]
-    )
+    metricas, extratos, ativos = st.tabs(["Métricas", "Extratos", "Ativos"])
     tabelas = Tabelas()
 
     # MARK: Métricas
@@ -179,7 +177,7 @@ if extratos:
     with ativos:
         selecao_ativo = st.radio(
             label="Selecione qual classe de ativo deseja ver:",
-            options=["Ações", "FII", "BDR", "Futuros", "Rendimentos"],
+            options=["Ações", "FII", "BDR", "Futuros", "Rendimentos", "Preço Médio"],
             horizontal=True,
         )
 
@@ -528,9 +526,19 @@ if extratos:
 
         # MARK: Preço Médio
         if selecao_ativo == "Preço Médio":
-            pm = PrecoMedio()
-            preco_medio = pm.calcular_preco_medio(df_filtered)
-            st.dataframe(data=preco_medio)
+            pmedio = PrecoMedio()
+            preco_medio = pmedio.calcular_preco_medio(df=df_filtered)
+
+            st.markdown(
+                "#### Tabela de Testes - Selecionar ativo para verificar cálculo"
+            )
+            st.dataframe(
+                data=preco_medio,
+                use_container_width=True,
+                column_config={
+                    "Data": st.column_config.DatetimeColumn("Data", format="DD/MM/YYYY")
+                },
+            )
 
 
 # MARK: Tela Inicial
