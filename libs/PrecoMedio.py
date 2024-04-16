@@ -1,13 +1,17 @@
 import pandas as pd
 from dataclasses import dataclass
 
+# PANDAS CONFIG
+# -----------------------------
+pd.set_option("future.no_silent_downcasting", True)
+
 
 @dataclass
 class PrecoMedio:
     """
     Classe que trata o cáculo do preço médio dos ativos.
 
-    Para calcular corretamente, o ativo precisa ser agrupado para que o cálculo seja feito apenas no ativo
+    Para calcular corretamente, o ativo precisa ser agrupado para que o cálculo seja feito apenas em um ativo.
     """
 
     # TODO: Facilitar o cálculo do preço médio
@@ -17,10 +21,10 @@ class PrecoMedio:
                 "Transferência - Liquidação|Grupamento|Desdobro"
             )
         ]
-        df["Saldo Quantidade"] = df["Quantidade"].where(
+        df.loc[:, "Saldo Quantidade"] = df.loc[:, "Quantidade"].where(
             df["Entrada/Saída"] == "Credito", -df["Quantidade"]
         )
-        df["Saldo Valor"] = df["Valor da Operação"].where(
+        df.loc[:, "Saldo Valor"] = df.loc[:, "Valor da Operação"].where(
             df["Entrada/Saída"] == "Credito", -df["Valor da Operação"]
         )
 
@@ -43,9 +47,9 @@ class PrecoMedio:
                 saldo_quantidade = 0
             saldo_valores.append(saldo_valor)
             saldo_quantidades.append(saldo_quantidade)
-        df["Saldo Valor"] = saldo_valores
-        df["Saldo Quantidade"] = saldo_quantidades
-        df["Preço Médio"] = df.apply(
+        df.loc[:, "Saldo Valor"] = saldo_valores
+        df.loc[:, "Saldo Quantidade"] = saldo_quantidades
+        df.loc[:, "Preço Médio"] = df.apply(
             lambda row: (
                 abs(row["Saldo Valor"] / row["Saldo Quantidade"])
                 if row["Saldo Quantidade"] > 0
