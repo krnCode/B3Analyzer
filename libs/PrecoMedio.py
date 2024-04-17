@@ -16,16 +16,15 @@ class PrecoMedio:
 
     # TODO: Facilitar o cálculo do preço médio
     def calcular_preco_medio(self, df: pd.DataFrame) -> pd.DataFrame:
-        df = df[
-            df["Movimentação"].str.contains(
-                "Transferência - Liquidação|Grupamento|Desdobro"
-            )
-        ]
-        df.loc[:, "Saldo Quantidade"] = df.loc[:, "Quantidade"].where(
-            df["Entrada/Saída"] == "Credito", -df["Quantidade"]
+        mask = df["Movimentação"].str.contains(
+            "Transferência - Liquidação|Grupamento|Desdobro"
         )
-        df.loc[:, "Saldo Valor"] = df.loc[:, "Valor da Operação"].where(
-            df["Entrada/Saída"] == "Credito", -df["Valor da Operação"]
+        df.loc[mask, "Saldo Quantidade"] = df.loc[mask, "Quantidade"].where(
+            df.loc[mask, "Entrada/Saída"] == "Credito", -df.loc[mask, "Quantidade"]
+        )
+        df.loc[mask, "Saldo Valor"] = df.loc[mask, "Valor da Operação"].where(
+            df.loc[mask, "Entrada/Saída"] == "Credito",
+            -df.loc[mask, "Valor da Operação"],
         )
 
         # Cálculo manual de soma cumulativa para considerar cenários de venda total, grupamento ou desdobramento
@@ -36,7 +35,7 @@ class PrecoMedio:
         saldo_valores = []
         saldo_quantidade = 0
         saldo_quantidades = []
-        for idx, row in df.iterrows():
+        for idx, row in df[mask].iterrows():
             if row["Movimentação"] in ["Grupamento"]:
                 saldo_quantidade = row["Quantidade"]
             else:
@@ -47,9 +46,9 @@ class PrecoMedio:
                 saldo_quantidade = 0
             saldo_valores.append(saldo_valor)
             saldo_quantidades.append(saldo_quantidade)
-        df.loc[:, "Saldo Valor"] = saldo_valores
-        df.loc[:, "Saldo Quantidade"] = saldo_quantidades
-        df.loc[:, "Preço Médio"] = df.apply(
+        df.loc[mask, "Saldo Valor"] = saldo_valores
+        df.loc[mask, "Saldo Quantidade"] = saldo_quantidades
+        df.loc[mask, "Preço Médio"] = df.loc[mask].apply(
             lambda row: (
                 abs(row["Saldo Valor"] / row["Saldo Quantidade"])
                 if row["Saldo Quantidade"] > 0
