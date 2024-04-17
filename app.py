@@ -528,7 +528,6 @@ if extratos:
         if selecao_ativo == "Preço Médio":
             pmedio = PrecoMedio()
             preco_medio = pmedio.calcular_preco_medio(df=df_filtered)
-
             st.markdown(
                 "#### Tabela de Testes - Selecionar ativo para verificar cálculo"
             )
