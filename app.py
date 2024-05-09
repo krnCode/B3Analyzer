@@ -1,8 +1,6 @@
 import pandas as pd
 import streamlit as st
 import os
-import sys
-from io import BytesIO
 from pathlib import Path
 from PIL import Image
 from libs.data_cleaning import *
